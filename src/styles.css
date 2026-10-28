@@ -1,1 +1,16 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --color-bg: #11151c;
+  --color-surface: #B3001B;
+  --color-border: #ffc800;
+  --color-text: #397f3e;
+  --color-text-muted: #5d2e8c;
+
+  --color-primary: #ffffff;
+  --color-primary-text: #11151c;
+
+  --font-base: 'Inter', sans-serif;
+  --font-title: 'Oswald', sans-serif; /* el título "Bienvenido a GrimoireLink" */
+
+  --space-1: 4px; --space-2: 8px; --space-3: 16px; --space-4: 24px;
+  --radius: 6px;
+}
