@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrl: './campaign.css',
   templateUrl: './campaign.html',
 })
-export class campaign {
+export class Campaign {
 }
