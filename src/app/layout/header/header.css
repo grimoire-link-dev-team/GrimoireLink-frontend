@@ -1,0 +1,71 @@
+:host { display: block; }
+.topbar {
+  min-height: 64px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 30px;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  color:black;
+}
+.brand
+{ 
+    display: inline-flex;
+    align-items: center;
+    gap: 10px; 
+    color: inherit;
+    text-decoration: none;
+}
+.brand-mark 
+{ 
+    display: grid;
+    place-items: center;
+    width: 29px; 
+    height: 29px; 
+    color: black; 
+}
+.brand-name 
+{ 
+    font-family: Georgia, 'Times New Roman', 
+    serif; font-size: 19px; 
+    font-weight: 700; 
+    letter-spacing: -.45px; 
+}
+.user-button { 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 9px; 
+    padding: 5px 0 5px 8px; 
+    border: 0; 
+    background: transparent; 
+    color: grey; 
+    font: inherit; 
+    cursor: pointer;
+}
+.user-avatar 
+{
+    display: grid; 
+    place-items: 
+    center; width: 28px; 
+    height: 28px; 
+    border-radius: 50%; 
+    background: wheat; 
+    color: grey; 
+    font-size: 12px; 
+}
+.user-name 
+{ 
+    font-size: 12px; 
+}
+.chevron 
+{ 
+    width: 13px; 
+    height: 13px; 
+    fill: none; 
+    stroke: currentColor; 
+    stroke-width: 1.5;
+ }
+@media (max-width: 600px) { .topbar { min-height: 58px; padding: 0 16px; } .brand-name { font-size: 17px; } .user-name, .chevron { display: none; } }

@@ -1,1 +1,20 @@
-<p>sidebar works!</p>
+<aside class="sidebar" aria-label="Navegación principal">
+  <div class="nav-section-label">MI CUADERNO</div>
+  <nav class="nav-list">
+    <a class="nav-link" routerLink="/inicio" routerLinkActive="active">Inicio</a>
+    <a class="nav-link" routerLink="/personajes" routerLinkActive="active">Personajes</a>
+    <a class="nav-link" routerLink="/campanias" routerLinkActive="active">Campañas</a>
+    <a class="nav-link" routerLink="/diario" routerLinkActive="active">Diario</a>
+  </nav>
+
+  <div class="nav-section-label secondary-label">DM</div>
+  <nav class="nav-list">
+    <a class="nav-link" routerLink="/monstruos" routerLinkActive="active">Monstruos</a>
+    <a class="nav-link" routerLink="/encuentros" routerLinkActive="active">Encuentros</a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="bottom-rule"></div>
+    <p>Ajustes de la cuenta</p>
+  </div>
+</aside>
