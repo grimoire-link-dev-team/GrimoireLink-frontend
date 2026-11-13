@@ -14,11 +14,23 @@
 
 .page-area {
   min-width: 0;
-  padding: 17px 30px 34px;
+  padding: var(--space-3) var(--space-5);
 }
 
 .page-content {
+  width: 100%;
   min-width: 0;
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow-wrap: break-word;
+}
+
+/* Responsive */
+
+@media (max-width: 1024px) {
+  .page-area {
+    padding: var(--space-3);
+  }
 }
 
 @media (max-width: 760px) {
@@ -27,6 +39,12 @@
   }
 
   .page-area {
-    padding: 13px 16px 25px;
+    padding: var(--space-3);
+  }
+}
+
+@media (max-width: 480px) {
+  .page-area {
+    padding: var(--space-2) var(--space-3);
   }
 }
