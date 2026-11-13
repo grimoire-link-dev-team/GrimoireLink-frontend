@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   imports: [],
@@ -7,4 +7,7 @@ import { Component } from '@angular/core';
   templateUrl: './campaign.html',
 })
 export class Campaign {
+
+
+
 }
