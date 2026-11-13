@@ -77,7 +77,56 @@
 
 </section>
 
+<section class="view-selector">
 
+  <h3 class="view-title">
+    VISTA ACTUAL
+  </h3>
+
+  <div class="view-info">
+
+    <div class="view-details">
+
+      <span class="view-name">
+        @if (isDungeonMaster()) {
+          Dungeon Master
+        } @else {
+          Jugador
+        }
+      </span>
+
+      <span class="view-description">
+        @if (isDungeonMaster()) {
+          Administracion de campaña
+        } @else {
+          Vista de participante
+        }
+      </span>
+
+    </div>
+
+  </div>
+
+  <label for="viewMode" class="view-label">
+    Seleccionar vista
+  </label>
+
+  <select
+    id="viewMode"
+    name="viewMode"
+    class="view-select"
+    [(ngModel)]="selectedView"
+  >
+    <option value="Dungeon Master">
+      Dungeon Master
+    </option>
+
+    <option value="player">
+      Jugador
+    </option>
+  </select>
+
+</section>
   <div class="nav-section-label secondary-label">
     DM
   </div>
