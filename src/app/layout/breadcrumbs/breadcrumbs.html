@@ -1,4 +1,15 @@
-<nav class="breadcrumbs" aria-label="Ruta de navegación">
-  <a routerLink="/inicio">Mi cuaderno</a>
-  <span aria-current="page">{{ paginaActual }}</span>
+<nav class="breadcrumbs" aria-label="Ruta de navegacion">
+
+  <a routerLink="/inicio" class="breadcrumb-link">
+    Mi cuaderno
+  </a>
+
+  <span class="breadcrumb-separator" aria-hidden="true">
+    /
+  </span>
+
+  <span class="breadcrumb-current" aria-current="page">
+    {{ currentPage }}
+  </span>
+
 </nav>
