@@ -1,16 +1,38 @@
 :root {
-  --color-bg: #11151c;
-  --color-surface: #B3001B;
-  --color-border: #ffc800;
-  --color-text: #397f3e;
-  --color-text-muted: #5d2e8c;
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-border: #e0e0e0;
+  --color-text: #000000;
+  --color-text-muted: #808080;
+  --color-text-subtle: #99958e;
 
-  --color-primary: #ffffff;
-  --color-primary-text: #11151c;
+  --color-hover: #e0e0e0;
+  --color-active: #e8e7e4;
+  --color-avatar-bg: #f5deb3;
+  --color-breadcrumb-hover: #33312e;
 
-  --font-base: 'Inter', sans-serif;
-  --font-title: 'Oswald', sans-serif; /* el título "Bienvenido a GrimoireLink" */
+  --color-primary: #11151c;
+  --color-primary-text: #ffffff;
 
-  --space-1: 4px; --space-2: 8px; --space-3: 16px; --space-4: 24px;
+  --font-base: Arial, Helvetica, sans-serif;
+  --font-title: Georgia, 'Times New Roman', serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 30px;
+
   --radius: 6px;
+  --radius-sm: 4px;
+
+  --header-height: 64px;
+  --sidebar-width: 218px;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-base);
 }
