@@ -19,7 +19,6 @@
   color: var(--color-text);
 }
 
-/* Logo */
 .brand {
   display: inline-flex;
   align-items: center;
@@ -43,7 +42,6 @@
   letter-spacing: -0.45px;
 }
 
-/* Usuario */
 .user-info {
   display: flex;
   align-items: center;

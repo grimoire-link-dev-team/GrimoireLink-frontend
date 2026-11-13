@@ -1,20 +1,80 @@
+
 <aside class="sidebar" aria-label="Navegación principal">
-  <div class="nav-section-label">MI CUADERNO</div>
-  <nav class="nav-list">
-    <a class="nav-link" routerLink="/inicio" routerLinkActive="active">Inicio</a>
-    <a class="nav-link" routerLink="/personajes" routerLinkActive="active">Personajes</a>
-    <a class="nav-link" routerLink="/campanias" routerLinkActive="active">Campañas</a>
-    <a class="nav-link" routerLink="/diario" routerLinkActive="active">Diario</a>
+
+  <div class="nav-section-label">
+    MI CUADERNO
+  </div>
+
+  <nav class="nav-list" aria-label="Mi cuaderno">
+
+    <a
+      class="nav-link"
+      routerLink="/inicio"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Inicio
+    </a>
+
+    <a
+      class="nav-link"
+      routerLink="/personajes"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Personajes
+    </a>
+
+    <a
+      class="nav-link"
+      routerLink="/campanias"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Campañas
+    </a>
+
+    <a
+      class="nav-link"
+      routerLink="/diario"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Diario
+    </a>
+
   </nav>
 
-  <div class="nav-section-label secondary-label">DM</div>
-  <nav class="nav-list">
-    <a class="nav-link" routerLink="/monstruos" routerLinkActive="active">Monstruos</a>
-    <a class="nav-link" routerLink="/encuentros" routerLinkActive="active">Encuentros</a>
+  <div class="nav-section-label secondary-label">
+    DM
+  </div>
+
+  <nav class="nav-list" aria-label="Dungeon Master">
+
+    <a
+      class="nav-link"
+      routerLink="/monstruos"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Monstruos
+    </a>
+
+    <a
+      class="nav-link"
+      routerLink="/encuentros"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Encuentros
+    </a>
+
   </nav>
+
 
   <div class="sidebar-bottom">
     <div class="bottom-rule"></div>
     <p>Ajustes de la cuenta</p>
   </div>
+
 </aside>
