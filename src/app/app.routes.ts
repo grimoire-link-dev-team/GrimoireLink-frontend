@@ -1,7 +1,7 @@
 import { Dashboard } from './pages/dashboard/dashboard';
 import { Home } from './pages/home/home';
-import { Login } from './pages/login/login';
-import { Register } from './pages/register/register';
+import { Login } from './auth/features/login/login';
+import { Register } from './auth/features/register/register';
 import { MainLayout } from './layout/main-layout/main-layout';
 import { Characters } from './pages/characters/characters';
 import { Monsters } from './pages/monsters/monsters';
