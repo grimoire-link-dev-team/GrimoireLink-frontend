@@ -1,3 +1,9 @@
+.encounters-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
 .encounter-empty {
   margin: 0;
   padding: var(--space-4);

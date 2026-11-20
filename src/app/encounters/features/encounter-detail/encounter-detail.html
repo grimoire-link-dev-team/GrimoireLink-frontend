@@ -6,15 +6,21 @@
 
   @if (encounterId(); as encounterId) {
 
+    <app-character-manager
+      [encounterId]="encounterId"
+      [campaignId]="campaignId()"
+      [canEdit]="canEditEncounter()"
+    />
+
     <app-enemy-manager
       [encounterId]="encounterId"
-      [canEdit]="canEditEnemies()"
+      [canEdit]="canEditEncounter()"
     />
 
   } @else {
 
     <p class="encounter-empty">
-      Elige un encuentro desde el detalle de una campana.
+      Elegí un encuentro desde el detalle de una campaña.
     </p>
 
   }
