@@ -6,6 +6,7 @@ import { UserResponse } from '../../auth/data-access/auth.model';
 import { form, FormField, maxLength, minLength, required } from '@angular/forms/signals';
 import { CampaignContextService } from '../../campaigns/data-access/campaign-context-service';
 import { ROUTE_COMMANDS } from '../../app.route.segments';
+import { NotificationService } from '../../shared/data-access/notification-service';
 
 
 interface ProfileAvatar {
@@ -24,6 +25,7 @@ export class Header implements OnInit {
 
 
   protected readonly auth = inject(AuthService);
+  private readonly notifications = inject(NotificationService);
   private readonly userService = inject(UserService);
   private readonly campaignContext = inject(CampaignContextService);
   private readonly router = inject(Router);
@@ -146,6 +148,7 @@ export class Header implements OnInit {
     this.nickname.set(name);
     this.selectedAvatar.set(this.avatarInput());
     this.isEditing.set(false);
+    this.notifications.success('Perfil actualizado.');
   }
 
   protected cancelEditing() {

@@ -6,6 +6,8 @@ import { CharacterService } from '../../../characters/data-access/character-serv
 import { CHARACTER_STATUS_LABELS } from '../../../characters/data-access/character.model';
 import { EncounterService } from '../../data-access/encounter-service';
 import { Encounter, EncounterCharacter } from '../../data-access/encounter.model';
+import { ConfirmationService } from '../../../shared/data-access/confirmation-service';
+import { NotificationService } from '../../../shared/data-access/notification-service';
 
 @Component({
   selector: 'app-character-manager',
@@ -15,6 +17,8 @@ import { Encounter, EncounterCharacter } from '../../data-access/encounter.model
 export class CharacterManager {
   private readonly characterService = inject(CharacterService);
   private readonly encounterService = inject(EncounterService);
+  private readonly confirmation = inject(ConfirmationService);
+  private readonly notifications = inject(NotificationService);
 
   readonly encounterId = input<string | null>(null);
   readonly campaignId = input<string | null>(null);
@@ -68,11 +72,55 @@ export class CharacterManager {
     }
   }
 
-  protected removeCharacter(characterId: string) {
+  protected async removeCharacter(character: EncounterCharacter) {
+    const confirmed = await this.confirmation.confirm({
+      title: 'Quitar personaje',
+      message: `¿Quitar a ${character.name} del encuentro? Sus puntos de golpe no cambian.`,
+      confirmLabel: 'Quitar',
+      danger: true,
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
     this.save(
-      encounterId => this.encounterService.removeCharacter(encounterId, characterId),
+      encounterId => this.encounterService.removeCharacter(encounterId, character.publicId),
       'No se pudo quitar el personaje.',
     );
+  }
+
+  // In D&D an unconscious character dies after failing three death saving throws.
+  // The DM rolls them at the table and records the result here.
+  protected async markAsDead(character: EncounterCharacter) {
+    if (!this.canEdit() || this.isSaving() || character.status !== 'UNCONSCIOUS') {
+      return;
+    }
+
+    const confirmed = await this.confirmation.confirm({
+      title: 'Marcar como muerto',
+      message: `¿${character.name} falló sus tiradas de salvación contra muerte? No se puede deshacer.`,
+      confirmLabel: 'Marcar como muerto',
+      danger: true,
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.isSaving.set(true);
+    this.errorMessage.set('');
+
+    try {
+      await firstValueFrom(this.characterService.markAsDead(character.publicId));
+      this.encounter.reload();
+      this.campaignCharacters.reload();
+      this.notifications.success(`${character.name} murió.`);
+    } catch (error) {
+      this.notifications.error(this.getErrorMessage(error, 'No se pudo marcar al personaje como muerto.'));
+    } finally {
+      this.isSaving.set(false);
+    }
   }
 
   protected getStatusLabel(status: EncounterCharacter['status']) {

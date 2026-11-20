@@ -7,6 +7,7 @@ import { CampaignContextService } from '../../data-access/campaign-context-servi
 import { CampaignService } from '../../data-access/campaign-service';
 import { CampaignRequest } from '../../data-access/campaign.model';
 import { ROUTE_COMMANDS } from '../../../app.route.segments';
+import { NotificationService } from '../../../shared/data-access/notification-service';
 
 @Component({
   imports: [FormField, FormRoot, RouterLink],
@@ -18,6 +19,7 @@ export class CampaignForm {
   protected readonly commands = ROUTE_COMMANDS;
 
   private readonly campaignService = inject(CampaignService);
+  private readonly notifications = inject(NotificationService);
   private readonly campaignContext = inject(CampaignContextService);
   private readonly router = inject(Router);
 
@@ -50,6 +52,7 @@ export class CampaignForm {
           try {
             await firstValueFrom(this.campaignService.createCampaign(request));
             this.campaignContext.load();
+            this.notifications.success(`Campaña "${request.name}" creada.`);
             await this.router.navigate(ROUTE_COMMANDS.campaigns);
           } catch (error) {
             this.errorMessage.set(this.getErrorMessage(error));

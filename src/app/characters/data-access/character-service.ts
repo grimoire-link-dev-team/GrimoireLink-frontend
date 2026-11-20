@@ -11,6 +11,11 @@ export class CharacterService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiURL}/characters`;
 
+  // The backend does not delete characters: DELETE marks them as DEAD.
+  markAsDead(characterId: string) {
+    return this.http.delete<void>(`${this.apiUrl}/${characterId}`);
+  }
+
   getByCampaign(campaignId: string): Observable<CharacterResponse[]> {
     return this.http.get<CharacterResponse[]>(this.apiUrl, { params: { campaignId } });
   }

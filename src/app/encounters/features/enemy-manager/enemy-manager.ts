@@ -7,6 +7,7 @@ import { Monster, MonsterReference } from '../../../monsters/data-access/monster
 import { MonsterService } from '../../../monsters/data-access/monster-service';
 import { EncounterService } from '../../data-access/encounter-service';
 import { Encounter } from '../../data-access/encounter.model';
+import { ConfirmationService } from '../../../shared/data-access/confirmation-service';
 
 @Component({
   imports: [FormField],
@@ -17,6 +18,7 @@ import { Encounter } from '../../data-access/encounter.model';
 export class EnemyManager {
   private readonly monsterService = inject(MonsterService);
   private readonly encounterService = inject(EncounterService);
+  private readonly confirmation = inject(ConfirmationService);
 
   readonly encounterId = input<string | null>(null);
   readonly canEdit = input(false);
@@ -90,7 +92,20 @@ export class EnemyManager {
     }
   }
 
-  protected removeMonster(monsterId: string) {
+  protected async removeMonster(monster: Monster) {
+    const confirmed = await this.confirmation.confirm({
+      title: 'Quitar monstruo',
+      message: `¿Quitar a ${monster.name} del encuentro?`,
+      confirmLabel: 'Quitar',
+      danger: true,
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
+    const monsterId = monster.publicId;
+
     this.save(
       encounterId => this.encounterService.removeMonster(encounterId, monsterId),
       'No se pudo quitar el monstruo.',
