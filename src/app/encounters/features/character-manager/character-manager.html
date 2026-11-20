@@ -124,12 +124,12 @@
                 min="1"
                 value="1"
                 aria-label="Cantidad de puntos de golpe"
-                [disabled]="isSaving()"
+                [disabled]="isSaving() || character.status === 'DEAD'"
               />
 
               <button
                 type="button"
-                [disabled]="isSaving() || character.currentHp <= 0"
+                [disabled]="isSaving() || character.status === 'DEAD' || character.currentHp <= 0"
                 (click)="damage(character, hpAmount.valueAsNumber)"
               >
                 Daño
@@ -137,17 +137,28 @@
 
               <button
                 type="button"
-                [disabled]="isSaving() || character.currentHp >= character.maxHp"
+                [disabled]="isSaving() || character.status === 'DEAD' || character.currentHp >= character.maxHp"
                 (click)="heal(character, hpAmount.valueAsNumber)"
               >
                 Curar
               </button>
 
+              @if (character.status === 'UNCONSCIOUS') {
+                <button
+                  type="button"
+                  class="remove-button"
+                  [disabled]="isSaving()"
+                  (click)="markAsDead(character)"
+                >
+                  Marcar como muerto
+                </button>
+              }
+
               <button
                 type="button"
                 class="remove-button"
                 [disabled]="isSaving()"
-                (click)="removeCharacter(character.publicId)"
+                (click)="removeCharacter(character)"
               >
                 Quitar
               </button>

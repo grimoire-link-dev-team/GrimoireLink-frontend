@@ -14,6 +14,7 @@ import {
   EncounterType,
 } from '../../data-access/encounter.model';
 import { ROUTE_COMMANDS } from '../../../app.route.segments';
+import { NotificationService } from '../../../shared/data-access/notification-service';
 
 const EMPTY_ENCOUNTER = { encounterType: 'COMBAT', encounterDifficulty: 'MEDIUM', description: '' };
 
@@ -27,6 +28,7 @@ export class CampaignEncounters implements OnInit {
   protected readonly commands = ROUTE_COMMANDS;
 
   private readonly encounterService = inject(EncounterService);
+  private readonly notifications = inject(NotificationService);
 
   campaignId = input.required<string>();
   isDungeonMaster = input(false);
@@ -81,6 +83,7 @@ export class CampaignEncounters implements OnInit {
 
             this.encounters.update((encounters) => [...encounters, created]);
             this.closeForm();
+            this.notifications.success('Encuentro creado.');
           } catch (error) {
             this.createError.set(this.getCreateErrorMessage(error));
           }

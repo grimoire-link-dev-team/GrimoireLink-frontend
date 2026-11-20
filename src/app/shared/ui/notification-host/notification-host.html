@@ -1,0 +1,14 @@
+@if (notifications.current(); as notification) {
+  <section
+    class="notification"
+    [class.success]="notification.type === 'success'"
+    [class.error]="notification.type === 'error'"
+    [attr.role]="notification.type === 'error' ? 'alert' : 'status'"
+  >
+    <p>{{ notification.message }}</p>
+
+    <button type="button" aria-label="Cerrar aviso" (click)="notifications.dismiss()">
+      ✕
+    </button>
+  </section>
+}

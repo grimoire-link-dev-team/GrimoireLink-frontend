@@ -15,6 +15,7 @@ import {
   CampaignMember,
 } from '../../data-access/campaign.model';
 import { ROUTE_COMMANDS } from '../../../app.route.segments';
+import { NotificationService } from '../../../shared/data-access/notification-service';
 
 @Component({
   imports: [RouterLink, DatePipe, FormField, CampaignEncounters],
@@ -26,6 +27,7 @@ export class CampaignDetail implements OnInit {
   protected readonly commands = ROUTE_COMMANDS;
 
   private readonly campaignService = inject(CampaignService);
+  private readonly notifications = inject(NotificationService);
   private readonly campaignContext = inject(CampaignContextService);
   private readonly userService = inject(UserService);
   private readonly route = inject(ActivatedRoute);
@@ -42,7 +44,6 @@ export class CampaignDetail implements OnInit {
 
   protected readonly errorMessage = signal('');
   protected readonly statusError = signal('');
-  protected readonly statusSuccess = signal('');
 
   protected readonly statusModel = signal<{ status: Campaign['status'] }>({ status: 'ACTIVE' });
   protected readonly statusForm = form(this.statusModel, (path) => {
@@ -74,7 +75,6 @@ export class CampaignDetail implements OnInit {
 
     this.isSaving.set(true);
     this.statusError.set('');
-    this.statusSuccess.set('');
 
     try {
       const updated = await firstValueFrom(
@@ -83,7 +83,7 @@ export class CampaignDetail implements OnInit {
       this.campaign.set(updated);
       this.statusModel.set({ status: updated.status });
       this.campaignContext.updateCampaign(updated);
-      this.statusSuccess.set('Estado actualizado correctamente.');
+      this.notifications.success('Estado de la campaña actualizado.');
     } catch (error) {
       this.statusError.set(
         error instanceof HttpErrorResponse && error.status === 403

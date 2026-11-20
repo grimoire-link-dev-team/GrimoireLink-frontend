@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { CampaignService } from '../../data-access/campaign-service';
 import { CampaignContextService } from '../../data-access/campaign-context-service';
 import { ROUTE_COMMANDS } from '../../../app.route.segments';
+import { NotificationService } from '../../../shared/data-access/notification-service';
 
 @Component({
   imports: [FormField, FormRoot, RouterLink],
@@ -17,6 +18,7 @@ export class CampaignJoin {
   protected readonly commands = ROUTE_COMMANDS;
 
   private readonly campaignService = inject(CampaignService);
+  private readonly notifications = inject(NotificationService);
   private readonly campaignContext = inject(CampaignContextService);
   private readonly router = inject(Router);
 
@@ -38,6 +40,7 @@ export class CampaignJoin {
           try {
             const campaign = await firstValueFrom(this.campaignService.joinCampaign(inviteCode));
             this.campaignContext.load(campaign.publicId);
+            this.notifications.success(`Te uniste a "${campaign.name}".`);
             await this.router.navigate(ROUTE_COMMANDS.campaignDetail(campaign.publicId));
           } catch (error) {
             this.errorMessage.set(this.getErrorMessage(error));
