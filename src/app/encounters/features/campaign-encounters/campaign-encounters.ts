@@ -13,6 +13,7 @@ import {
   EncounterStatus,
   EncounterType,
 } from '../../data-access/encounter.model';
+import { ROUTE_COMMANDS } from '../../../app.route.segments';
 
 const EMPTY_ENCOUNTER = { encounterType: 'COMBAT', encounterDifficulty: 'MEDIUM', description: '' };
 
@@ -23,6 +24,8 @@ const EMPTY_ENCOUNTER = { encounterType: 'COMBAT', encounterDifficulty: 'MEDIUM'
   styleUrl: './campaign-encounters.css',
 })
 export class CampaignEncounters implements OnInit {
+  protected readonly commands = ROUTE_COMMANDS;
+
   private readonly encounterService = inject(EncounterService);
 
   campaignId = input.required<string>();

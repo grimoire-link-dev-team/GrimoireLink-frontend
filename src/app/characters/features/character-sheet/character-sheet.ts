@@ -11,6 +11,7 @@ import { catchError, forkJoin, of, switchMap } from 'rxjs';
 import { UserService } from '../../../auth/data-access/user-service';
 import { CharacterSpells } from '../character-spells/character-spells';
 import { CharacterInventory } from '../character-inventory/character-inventory';
+import { ROUTE_COMMANDS } from '../../../app.route.segments';
 
 
 type SheetTab = 'sheet' | 'spells' | 'inventory';
@@ -34,6 +35,8 @@ interface SavingThrow extends Ability {
   templateUrl: './character-sheet.html',
 })
 export class CharacterSheet {
+  protected readonly commands = ROUTE_COMMANDS;
+
 
 
   readonly campaignContext = inject(CampaignContextService);

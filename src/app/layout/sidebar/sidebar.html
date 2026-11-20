@@ -10,7 +10,7 @@
 
     <a
       class="nav-link"
-      routerLink="/inicio"
+      [routerLink]="commands.home"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
     >
@@ -19,7 +19,7 @@
 
     <a
       class="nav-link"
-      routerLink="/personajes"
+      [routerLink]="commands.characters"
       routerLinkActive="active"
     >
       Personajes
@@ -27,7 +27,7 @@
 
     <a
       class="nav-link"
-      routerLink="/campanias"
+      [routerLink]="commands.campaigns"
       routerLinkActive="active"
     >
       Campañas
@@ -35,7 +35,7 @@
 
     <a
       class="nav-link"
-      routerLink="/diario"
+      [routerLink]="commands.journal"
       routerLinkActive="active"
     >
       Diario
@@ -43,7 +43,7 @@
 
     <a
       class="nav-link"
-      routerLink="/monstruos"
+      [routerLink]="commands.monsters"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
     >
@@ -89,7 +89,7 @@
 
         <a
           class="campaign-button"
-          [routerLink]="['/campanias', campaign.publicId]"
+          [routerLink]="commands.campaignDetail(campaign.publicId)"
         >
           Ver campaña
         </a>
@@ -102,7 +102,7 @@
         Sin campaña seleccionada.
       </p>
 
-      <a class="campaign-button" routerLink="/campanias">
+      <a class="campaign-button" [routerLink]="commands.campaigns">
         Ver campañas
       </a>
 
@@ -218,7 +218,7 @@
 
       <a
         class="nav-link"
-        routerLink="/dados"
+        [routerLink]="commands.dice"
         routerLinkActive="active"
       >
         Dados rapidos
@@ -273,7 +273,7 @@
 
       }
 
-      <a class="campaign-button" routerLink="/diario">
+      <a class="campaign-button" [routerLink]="commands.journal">
         Ver diario
       </a>
 
@@ -323,7 +323,7 @@
 
       }
 
-      <a class="campaign-button" routerLink="/personajes">
+      <a class="campaign-button" [routerLink]="commands.characters">
         Ver personajes
       </a>
 

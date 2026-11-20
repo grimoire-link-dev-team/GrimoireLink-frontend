@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { CampaignContextService } from '../../data-access/campaign-context-service';
 import { CampaignService } from '../../data-access/campaign-service';
 import { CampaignRequest } from '../../data-access/campaign.model';
+import { ROUTE_COMMANDS } from '../../../app.route.segments';
 
 @Component({
   imports: [FormField, FormRoot, RouterLink],
@@ -14,6 +15,8 @@ import { CampaignRequest } from '../../data-access/campaign.model';
   templateUrl: './campaign-form.html',
 })
 export class CampaignForm {
+  protected readonly commands = ROUTE_COMMANDS;
+
   private readonly campaignService = inject(CampaignService);
   private readonly campaignContext = inject(CampaignContextService);
   private readonly router = inject(Router);
@@ -47,7 +50,7 @@ export class CampaignForm {
           try {
             await firstValueFrom(this.campaignService.createCampaign(request));
             this.campaignContext.load();
-            await this.router.navigate(['/campanias']);
+            await this.router.navigate(ROUTE_COMMANDS.campaigns);
           } catch (error) {
             this.errorMessage.set(this.getErrorMessage(error));
           }

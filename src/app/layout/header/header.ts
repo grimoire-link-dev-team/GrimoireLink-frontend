@@ -5,6 +5,7 @@ import { UserService } from '../../auth/data-access/user-service';
 import { UserResponse } from '../../auth/data-access/auth.model';
 import { form, FormField, maxLength, minLength, required } from '@angular/forms/signals';
 import { CampaignContextService } from '../../campaigns/data-access/campaign-context-service';
+import { ROUTE_COMMANDS } from '../../app.route.segments';
 
 
 interface ProfileAvatar {
@@ -19,6 +20,8 @@ interface ProfileAvatar {
   templateUrl: './header.html',
 })
 export class Header implements OnInit {
+  protected readonly commands = ROUTE_COMMANDS;
+
 
   protected readonly auth = inject(AuthService);
   private readonly userService = inject(UserService);
@@ -158,7 +161,7 @@ export class Header implements OnInit {
     this.selectedAvatar.set('wizard');
     this.isEditing.set(false);
 
-    this.router.navigate(['/']);
+    this.router.navigate(ROUTE_COMMANDS.root);
   }
 
 }

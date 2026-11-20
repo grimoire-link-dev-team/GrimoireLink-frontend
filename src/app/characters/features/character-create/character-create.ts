@@ -31,6 +31,7 @@ import {
   SCORE_METHODS,
   ScoreMethod,
 } from '../../data-access/character-rules';
+import { ROUTE_COMMANDS } from '../../../app.route.segments';
 
 interface CharacterDraft {
   name: string;
@@ -79,6 +80,8 @@ const SUBCLASS_LEVEL = 3;
   templateUrl: './character-create.html',
 })
 export class CharacterCreate {
+  protected readonly commands = ROUTE_COMMANDS;
+
 
   readonly campaignContext = inject(CampaignContextService);
 
@@ -489,7 +492,13 @@ export class CharacterCreate {
   }
 
   goToCreatedCharacter(): void {
-    this.router.navigate(['/personajes', this.createdCharacterId()], {
+    const characterId = this.createdCharacterId();
+
+    if (!characterId) {
+      return;
+    }
+
+    this.router.navigate(ROUTE_COMMANDS.characterDetail(characterId), {
       queryParams: { campaignId: this.createdCampaignId() },
     });
   }
@@ -497,7 +506,7 @@ export class CharacterCreate {
   // Borrador
 
   saveAndExit(): void {
-    this.router.navigate(['/personajes']);
+    this.router.navigate(ROUTE_COMMANDS.characters);
   }
 
   discardDraft(): void {

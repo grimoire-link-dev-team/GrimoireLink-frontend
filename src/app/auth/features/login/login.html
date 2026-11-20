@@ -1,9 +1,9 @@
 <div class="auth-page">
   <header class="auth-header">
-    <a class="brand" routerLink="/">GrimoireLink</a>
+    <a class="brand" [routerLink]="commands.root">GrimoireLink</a>
     <p class="auth-header-link">
       ¿Aún no tienes cuenta?
-      <a class="outline-button" routerLink="/register">Crear una cuenta</a>
+      <a class="outline-button" [routerLink]="commands.register">Crear una cuenta</a>
     </p>
   </header>
 
@@ -76,7 +76,7 @@
 
       <p class="switch-auth">
         ¿Es tu primera aventura?
-        <a routerLink="/register">Regístrate gratis</a>
+        <a [routerLink]="commands.register">Regístrate gratis</a>
       </p>
       <p class="card-note">
         Al entrar volverás a Inicio, donde encontrarás tus personajes, campañas y últimas

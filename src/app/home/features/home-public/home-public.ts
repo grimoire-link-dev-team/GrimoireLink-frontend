@@ -12,6 +12,7 @@ import {
   DndRule,
   DndSpell,
 } from '../../../shared/data-access/srd.model';
+import { ROUTE_COMMANDS } from '../../../app.route.segments';
 
 interface InfoItem {
   title: string;
@@ -51,6 +52,8 @@ const ABILITY_INFO: Record<string, { abbr: string; text: string }> = {
 
 
 export class HomePublic implements OnInit {
+  protected readonly commands = ROUTE_COMMANDS;
+
   readonly isLoggedIn = input(false);
 
   private readonly srd = inject(SrdService);

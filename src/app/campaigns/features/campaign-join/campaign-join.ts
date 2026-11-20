@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { CampaignService } from '../../data-access/campaign-service';
 import { CampaignContextService } from '../../data-access/campaign-context-service';
+import { ROUTE_COMMANDS } from '../../../app.route.segments';
 
 @Component({
   imports: [FormField, FormRoot, RouterLink],
@@ -13,6 +14,8 @@ import { CampaignContextService } from '../../data-access/campaign-context-servi
   templateUrl: './campaign-join.html',
 })
 export class CampaignJoin {
+  protected readonly commands = ROUTE_COMMANDS;
+
   private readonly campaignService = inject(CampaignService);
   private readonly campaignContext = inject(CampaignContextService);
   private readonly router = inject(Router);
@@ -35,7 +38,7 @@ export class CampaignJoin {
           try {
             const campaign = await firstValueFrom(this.campaignService.joinCampaign(inviteCode));
             this.campaignContext.load(campaign.publicId);
-            await this.router.navigate(['/campanias', campaign.publicId]);
+            await this.router.navigate(ROUTE_COMMANDS.campaignDetail(campaign.publicId));
           } catch (error) {
             this.errorMessage.set(this.getErrorMessage(error));
           }

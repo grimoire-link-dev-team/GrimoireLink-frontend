@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { CampaignService } from '../../data-access/campaign-service';
 import { Campaign, CAMPAIGN_STATUS_LABELS } from '../../data-access/campaign.model';
+import { ROUTE_COMMANDS } from '../../../app.route.segments';
 
 @Component({
   imports: [FormField, RouterLink],
@@ -12,6 +13,8 @@ import { Campaign, CAMPAIGN_STATUS_LABELS } from '../../data-access/campaign.mod
   templateUrl: './campaign-list.html',
 })
 export class CampaignList implements OnInit {
+  protected readonly commands = ROUTE_COMMANDS;
+
   private readonly campaignService = inject(CampaignService);
 
   protected readonly campaigns = signal<Campaign[]>([]);

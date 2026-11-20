@@ -3,6 +3,7 @@ import { email, form, FormField, FormRoot, minLength, required } from '@angular/
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../data-access/auth-service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ROUTE_COMMANDS } from '../../../app.route.segments';
 
 @Component({
   imports: [FormField, FormRoot, RouterLink],
@@ -11,6 +12,8 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './register.html',
 })
 export class Register {
+  protected readonly commands = ROUTE_COMMANDS;
+
 
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
@@ -59,7 +62,7 @@ export class Register {
 
           try {
             await this.authService.register(data);
-            await this.router.navigateByUrl('/inicio');
+            await this.router.navigate(ROUTE_COMMANDS.home);
           } catch (error) {
             this.errorMessage.set(this.getErrorMessage(error));
           }

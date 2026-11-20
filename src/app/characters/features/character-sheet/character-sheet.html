@@ -5,7 +5,7 @@
 
   <header class="sheet-header">
     <div>
-      <a routerLink="/personajes" class="back-link">
+      <a [routerLink]="commands.characters" class="back-link">
         Volver a personajes
       </a>
 
@@ -25,7 +25,7 @@
     <div class="sheet-message">
       <p>Selecciona una campana para continuar.</p>
 
-      <a routerLink="/campanias" class="action-link">
+      <a [routerLink]="commands.campaigns" class="action-link">
         Ver campanas
       </a>
     </div>

@@ -1,6 +1,6 @@
 <section class="campaign-join-page">
   <header class="join-header">
-    <a routerLink="/campanias" class="back-link">Volver a campañas</a>
+    <a [routerLink]="commands.campaigns" class="back-link">Volver a campañas</a>
     <h1>Unirse a una campaña</h1>
     <p>Ingresá el código de invitación que te compartió tu Dungeon Master.</p>
   </header>
@@ -42,7 +42,7 @@
       >
         {{ joinForm().submitting() ? 'Uniéndote...' : 'Unirse a la campaña' }}
       </button>
-      <a routerLink="/campanias" class="cancel-button">Cancelar</a>
+      <a [routerLink]="commands.campaigns" class="cancel-button">Cancelar</a>
     </div>
   </form>
 </section>

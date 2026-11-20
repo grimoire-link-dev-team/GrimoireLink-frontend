@@ -2,7 +2,7 @@
 
   <a
     class="brand"
-    routerLink="/"
+    [routerLink]="commands.root"
     aria-label="Ir al inicio de GrimoireLink"
   >
     <img
@@ -124,7 +124,7 @@
 
     } @else {
 
-      <a class="login-link" routerLink="/login">
+      <a class="login-link" [routerLink]="commands.login">
         Iniciar sesión
       </a>
 
