@@ -14,6 +14,7 @@ import {
   CAMPAIGN_STATUS_LABELS,
   CampaignMember,
 } from '../../data-access/campaign.model';
+import { ROUTE_COMMANDS } from '../../../app.route.segments';
 
 @Component({
   imports: [RouterLink, DatePipe, FormField, CampaignEncounters],
@@ -22,6 +23,8 @@ import {
   templateUrl: './campaign-detail.html',
 })
 export class CampaignDetail implements OnInit {
+  protected readonly commands = ROUTE_COMMANDS;
+
   private readonly campaignService = inject(CampaignService);
   private readonly campaignContext = inject(CampaignContextService);
   private readonly userService = inject(UserService);
@@ -48,7 +51,7 @@ export class CampaignDetail implements OnInit {
 
   ngOnInit() {
     if (!this.publicId) {
-      this.router.navigate(['/campanias']);
+      this.router.navigate(ROUTE_COMMANDS.campaigns);
       return;
     }
 

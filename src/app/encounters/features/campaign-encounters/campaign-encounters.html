@@ -131,7 +131,7 @@
             }        
                 <a
                   class="secondary-button"
-                  routerLink="/encuentros"
+                  [routerLink]="commands.encounters"
                   [queryParams]="{
                     encounterId: encounter.publicId,
                     campaignId: campaignId()

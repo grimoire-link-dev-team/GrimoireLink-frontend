@@ -1,11 +1,11 @@
 <div class="auth-page">
 
   <header class="auth-header">
-    <a class="brand" routerLink="/">GrimoireLink</a>
+    <a class="brand" [routerLink]="commands.root">GrimoireLink</a>
 
     <p class="auth-header-link">
       ¿Ya tienes una cuenta?
-      <a class="outline-button" routerLink="/login">
+      <a class="outline-button" [routerLink]="commands.login">
         Iniciar sesion
       </a>
     </p>
@@ -138,7 +138,7 @@
 
       <p class="switch-auth">
         ¿Ya tienes una cuenta?
-        <a routerLink="/login">Iniciar sesion</a>
+        <a [routerLink]="commands.login">Iniciar sesion</a>
       </p>
 
       <p class="card-note">

@@ -12,7 +12,7 @@
     </div>
 
     @if (canCreate()) {
-      <a routerLink="/personajes/nuevo" class="create-button">+ Crear personaje</a>
+      <a [routerLink]="commands.newCharacter" class="create-button">+ Crear personaje</a>
     }
   </header>
 
@@ -74,7 +74,7 @@
     class="character-card"
     [class.mine]="mine"
     [class.dead]="character.status === 'DEAD'"
-    [routerLink]="['/personajes', character.publicId]"
+    [routerLink]="commands.characterDetail(character.publicId)"
     [queryParams]="{ campaignId: campaignId() }"
   >
     <div class="card-top">

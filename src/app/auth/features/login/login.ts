@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { email, form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../data-access/auth-service';
+import { ROUTE_COMMANDS } from '../../../app.route.segments';
 
 @Component({
   imports: [FormField, FormRoot, RouterLink],
@@ -11,6 +12,8 @@ import { AuthService } from '../../data-access/auth-service';
   templateUrl: './login.html',
 })
 export class Login {
+  protected readonly commands = ROUTE_COMMANDS;
+
   private auth = inject(AuthService);
   private router = inject(Router);
 
@@ -31,7 +34,7 @@ export class Login {
           const value = field().value();
           try {
             await this.auth.login({ username: value.email, password: value.password });
-            await this.router.navigateByUrl('/inicio');
+            await this.router.navigate(ROUTE_COMMANDS.home);
           } catch (error) {
             this.errorMessage.set(this.getErrorMessage(error));
           }

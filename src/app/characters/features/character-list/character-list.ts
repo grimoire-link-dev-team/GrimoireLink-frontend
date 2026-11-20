@@ -7,6 +7,7 @@ import { UserService } from '../../../auth/data-access/user-service';
 import { CampaignContextService } from '../../../campaigns/data-access/campaign-context-service';
 import { CharacterService } from '../../data-access/character-service';
 import { CHARACTER_STATUS_LABELS, CharacterResponse } from '../../data-access/character.model';
+import { ROUTE_COMMANDS } from '../../../app.route.segments';
 
 @Component({
   imports: [NgTemplateOutlet, RouterLink],
@@ -15,6 +16,8 @@ import { CHARACTER_STATUS_LABELS, CharacterResponse } from '../../data-access/ch
   templateUrl: './character-list.html',
 })
 export class CharacterList {
+  protected readonly commands = ROUTE_COMMANDS;
+
   private readonly characterService = inject(CharacterService);
   protected readonly campaignContext = inject(CampaignContextService);
 

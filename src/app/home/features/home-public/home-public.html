@@ -18,21 +18,21 @@
 
           @if (isLoggedIn()) {
 
-            <a class="primary-button" routerLink="/campanias">
+            <a class="primary-button" [routerLink]="commands.campaigns">
               Mis campanas
             </a>
 
-            <a class="outline-button" routerLink="/personajes">
+            <a class="outline-button" [routerLink]="commands.characters">
               Mis personajes
             </a>
 
           } @else {
 
-            <a class="primary-button" routerLink="/register">
+            <a class="primary-button" [routerLink]="commands.register">
               Crear cuenta
             </a>
 
-            <a class="outline-button" routerLink="/login">
+            <a class="outline-button" [routerLink]="commands.login">
               Iniciar sesion
             </a>
 
@@ -284,13 +284,13 @@
       </div>
       @if (isLoggedIn()) {
 
-        <a class="primary-button" routerLink="/campanias">
+        <a class="primary-button" [routerLink]="commands.campaigns">
           Ver mis campañas
         </a>
 
       } @else {
 
-        <a class="primary-button" routerLink="/register">
+        <a class="primary-button" [routerLink]="commands.register">
           Crear cuenta
         </a>
 

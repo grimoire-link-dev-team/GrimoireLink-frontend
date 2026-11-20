@@ -8,6 +8,7 @@ import { CampaignContextService } from '../../../campaigns/data-access/campaign-
 import { JournalService } from '../../data-access/journal-service';
 import {JournalEntry,JournalEntryType,JOURNAL_ENTRY_OPTIONS} from '../../data-access/journal.model';
 import { SidebarSummaryService } from '../../../layout/data-access/sidebar-summary-service';
+import { ROUTE_COMMANDS } from '../../../app.route.segments';
 
 interface JournalFormModel {
   journalEntryType: JournalEntryType;
@@ -26,6 +27,8 @@ const EMPTY_JOURNAL: JournalFormModel = {
   styleUrl: './journal-page.css',
 })
 export class JournalPage {
+  protected readonly commands = ROUTE_COMMANDS;
+
 
   readonly campaignContext = inject(CampaignContextService);
   private readonly journalService = inject(JournalService);

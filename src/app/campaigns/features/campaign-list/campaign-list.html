@@ -6,8 +6,8 @@
     </div>
 
     <div class="campaign-actions">
-      <a routerLink="/campanias/unirse" class="detail-button">Unirse a campaña</a>
-      <a routerLink="/campanias/nueva" class="create-button">+ Crear campaña</a>
+      <a [routerLink]="commands.joinCampaign" class="detail-button">Unirse a campaña</a>
+      <a [routerLink]="commands.newCampaign" class="create-button">+ Crear campaña</a>
     </div>
   </header>
 
@@ -71,7 +71,7 @@
             >
               {{ getStatusLabel(campaign.status) }}
             </span>
-            <a [routerLink]="['/campanias', campaign.publicId]" class="detail-button">Ver detalle</a>
+            <a [routerLink]="commands.campaignDetail(campaign.publicId)" class="detail-button">Ver detalle</a>
           </div>
         </article>
       }

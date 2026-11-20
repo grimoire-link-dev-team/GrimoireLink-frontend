@@ -5,7 +5,7 @@
   <header class="create-header">
     <div>
       <p class="breadcrumb">
-        <a routerLink="/personajes">Personajes</a> / Nuevo personaje
+        <a [routerLink]="commands.characters">Personajes</a> / Nuevo personaje
       </p>
 
       <h1>Da forma a tu personaje</h1>
@@ -508,7 +508,7 @@
           } @else {
             <p class="field-error">
               No tenés una campaña seleccionada. Elegí una en el menú lateral o
-              <a routerLink="/campanias/unirse">unite a una campaña</a>.
+              <a [routerLink]="commands.joinCampaign">unite a una campaña</a>.
             </p>
           }
         </div>

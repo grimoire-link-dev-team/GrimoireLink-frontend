@@ -1,98 +1,56 @@
 import { Routes } from '@angular/router';
+import { ROUTE_SEGMENTS } from './app.route.segments';
+import { authRoutes } from './auth/auth.routes';
 import { authGuard } from './auth/data-access/auth-guard';
-import { guestGuard } from './auth/data-access/guest-guard';
 
 export const routes: Routes = [
-  {
-    path: 'login',
-    canActivate: [guestGuard],
-    loadComponent: () => import('./auth/features/login/login').then((m) => m.Login),
-  },
-  {
-    path: 'register',
-    canActivate: [guestGuard],
-    loadComponent: () => import('./auth/features/register/register').then((m) => m.Register),
-  },
+  ...authRoutes,
   {
     path: '',
-    loadComponent: () => import('./layout/main-layout/main-layout').then((m) => m.MainLayout),
+    loadComponent: () => import('./layout/main-layout/main-layout').then(m => m.MainLayout),
     children: [
       {
+        // Public landing; Home shows the dashboard when the user is logged in.
         path: '',
         pathMatch: 'full',
-        loadComponent: () => import('./home/features/home/home').then((m) => m.Home),
+        loadComponent: () => import('./home/features/home/home').then(m => m.Home),
       },
       {
         path: '',
         canActivate: [authGuard],
-        children: [          
+        children: [
           {
-            path: 'inicio',
-            loadComponent: () =>
-              import('./home/features/home/home').then(m => m.Home),
+            path: ROUTE_SEGMENTS.home,
+            loadComponent: () => import('./home/features/home/home').then(m => m.Home),
           },
           {
-            path: 'personajes',
-            loadComponent: () =>
-              import('./characters/features/character-list/character-list')
-                .then(m => m.CharacterList),
+            path: ROUTE_SEGMENTS.characters,
+            loadChildren: () => import('./characters/characters.routes').then(m => m.characterRoutes),
           },
           {
-            // Debe ir antes de 'personajes/:characterId' para que "nuevo" no se tome como id.
-            path: 'personajes/nuevo',
-            loadComponent: () =>
-              import('./characters/features/character-create/character-create')
-                .then(m => m.CharacterCreate),
+            path: ROUTE_SEGMENTS.campaigns,
+            loadChildren: () => import('./campaigns/campaigns.routes').then(m => m.campaignRoutes),
           },
           {
-            path: 'personajes/:characterId',
+            path: ROUTE_SEGMENTS.journal,
             loadComponent: () =>
-              import('./characters/features/character-sheet/character-sheet')
-                .then(m => m.CharacterSheet),
-          },  
-          {
-            path: 'campanias',
-            loadComponent: () =>
-              import('./campaigns/features/campaign-list/campaign-list')
-                .then(m => m.CampaignList),
+              import('./journal/features/journal-page/journal-page').then(m => m.JournalPage),
           },
           {
-            path: 'campanias/nueva',
+            path: ROUTE_SEGMENTS.monsters,
             loadComponent: () =>
-              import('./campaigns/features/campaign-form/campaign-form')
-                .then(m => m.CampaignForm),
+              import('./monsters/features/bestiary/monsters').then(m => m.Monsters),
           },
           {
-            path: 'campanias/unirse',
+            path: ROUTE_SEGMENTS.dice,
+            loadComponent: () => import('./shared/ui/dice-roller/dice-roller').then(m => m.DiceRoller),
+          },
+          {
+            path: ROUTE_SEGMENTS.encounters,
             loadComponent: () =>
-              import('./campaigns/features/campaign-join/campaign-join')
-                .then(m => m.CampaignJoin),
-          },
-          {
-            path: 'campanias/:publicId',
-            loadComponent: () =>
-              import('./campaigns/features/campaign-detail/campaign-detail')
-                .then(m => m.CampaignDetail),
-          },
-          {
-            path: 'diario',
-            loadComponent: () =>
-              import('./journal/features/journal-page/journal-page')
-                .then(m => m.JournalPage),
-          },
-          {
-            path: 'monstruos',
-            loadComponent: () => import('./monsters/features/bestiary/monsters').then((m) => m.Monsters),
-          },
-          {
-            path: 'dados',
-            loadComponent: () =>
-              import('./shared/ui/dice-roller/dice-roller')
-                .then(m => m.DiceRoller),
-          },
-          {
-            path: 'encuentros',
-           loadComponent: () => import('./encounters/features/encounter-detail/encounter-detail').then((m) => m.EncounterDetail),
+              import('./encounters/features/encounter-detail/encounter-detail').then(
+                m => m.EncounterDetail,
+              ),
           },
         ],
       },

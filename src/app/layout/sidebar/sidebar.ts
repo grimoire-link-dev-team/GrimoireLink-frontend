@@ -5,6 +5,7 @@ import { Campaign } from '../../campaigns/data-access/campaign.model';
 import { catchError, forkJoin, of } from 'rxjs';
 import { SidebarCharacter, SidebarJournalEntry, SidebarSummaryService } from '../data-access/sidebar-summary-service';
 import { DatePipe } from '@angular/common';
+import { ROUTE_COMMANDS } from '../../app.route.segments';
 
 type ViewMode='Dungeon Master'| 'Player';
 
@@ -15,6 +16,8 @@ type ViewMode='Dungeon Master'| 'Player';
   templateUrl: './sidebar.html',
 })
 export class Sidebar implements OnInit{
+  protected readonly commands = ROUTE_COMMANDS;
+
 
   readonly campaignContext = inject(CampaignContextService);
 
