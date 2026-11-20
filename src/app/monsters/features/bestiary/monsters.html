@@ -1,0 +1,219 @@
+<section class="bestiary-page">
+
+  <!-- Header -->
+
+  <header class="bestiary-header">
+
+    <h1>Bestiario</h1>
+
+    <p>
+      Explora las criaturas y monstruos de D&D 5e.
+    </p>
+
+  </header>
+
+  @if (isLoading()) {
+
+    <div class="bestiary-message" role="status">
+      Cargando bestiario...
+    </div>
+
+  } @else if (errorMessage()) {
+
+    <div class="bestiary-message" role="alert">
+
+      <p>{{ errorMessage() }}</p>
+
+      <button
+        type="button"
+        (click)="loadMonsters()"
+      >
+        Reintentar
+      </button>
+
+    </div>
+
+  } @else {
+
+    <div class="bestiary-layout">
+
+      <!-- Monster Catalog -->
+
+      <section class="bestiary-panel">
+
+        <div class="bestiary-search">
+
+          <label for="monsterSearch">
+            Buscar monstruo
+          </label>
+
+          <input
+            id="monsterSearch"
+            type="text"
+            placeholder="Ej. Goblin, Dragon, Skeleton..."
+            [formField]="searchForm.term"
+          />
+
+          <p>
+            {{ filteredMonsters().length }}
+            de {{ monsters().length }} monstruos
+          </p>
+
+        </div>
+
+        <div class="bestiary-results">
+
+          @for (
+            monster of filteredMonsters();
+            track monster.index
+          ) {
+
+            <button
+              type="button"
+              class="bestiary-monster"
+              [class.selected]="selectedMonster()?.index === monster.index"
+              [attr.aria-pressed]="selectedMonster()?.index === monster.index"
+              (click)="selectMonster(monster)"
+            >
+
+              <span>{{ monster.name }}</span>
+
+              <small>{{ monster.index }}</small>
+
+            </button>
+
+          } @empty {
+
+            <p class="bestiary-empty">
+              No se encontraron monstruos.
+            </p>
+
+          }
+
+        </div>
+
+      </section>
+
+      <!-- Monster Detail -->
+
+      <section class="bestiary-detail">
+
+        @if (isDetailLoading()) {
+
+          <p role="status">
+            Cargando monstruo...
+          </p>
+
+        } @else if (detailError()) {
+
+          <div class="bestiary-message" role="alert">
+
+            <p>{{ detailError() }}</p>
+
+            <button
+              type="button"
+              (click)="retryDetail()"
+            >
+              Reintentar
+            </button>
+
+          </div>
+
+        } @else if (monsterDetail(); as monster) {
+
+          <!-- Monster Name -->
+
+          <h2>{{ monster.name }}</h2>
+
+          <!-- Monster Illustration -->
+
+          <div class="monster-illustration">
+
+            @if (monsterImageUrl(); as imageUrl) {
+
+              <img
+                [src]="imageUrl"
+                [alt]="'Ilustración de ' + monster.name"
+                loading="lazy"
+                (error)="onImageError()"
+              />
+
+            } @else {
+
+              <div class="monster-image-placeholder">
+                <span>Sin ilustración disponible</span>
+              </div>
+
+            }
+
+          </div>
+
+          <!-- Monster Summary -->
+
+          <div class="monster-summary">
+
+            <div>
+              <span>Puntos de golpe</span>
+
+              <strong>
+                {{ monster.maxHp }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Desafío</span>
+
+              <strong>
+                {{ monster.challengeRating }}
+              </strong>
+            </div>
+
+          </div>
+
+          <!-- Monster Abilities -->
+
+          <h3>Atributos</h3>
+
+          <div class="monster-abilities">
+
+            <div>
+              <span>Fuerza</span>
+
+              <strong>
+                {{ monster.strength }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Destreza</span>
+
+              <strong>
+                {{ monster.dexterity }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Constitución</span>
+
+              <strong>
+                {{ monster.constitution }}
+              </strong>
+            </div>
+
+          </div>
+
+        } @else {
+
+          <div class="bestiary-empty">
+            Seleccioná un monstruo para consultar sus datos.
+          </div>
+
+        }
+
+      </section>
+
+    </div>
+
+  }
+
+</section>

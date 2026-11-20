@@ -1,0 +1,114 @@
+<section class="character-page">
+  <header class="character-header">
+    <div>
+      <h1>Personajes</h1>
+      <p>
+        @if (campaignContext.selectedCampaign(); as campaign) {
+          Grupo de <strong>{{ campaign.name }}</strong>
+        } @else {
+          Los personajes de tu campaña activa.
+        }
+      </p>
+    </div>
+
+    @if (canCreate()) {
+      <a [routerLink]="commands.newCharacter" class="create-button">+ Crear personaje</a>
+    }
+  </header>
+
+  @if (!campaignId()) {
+    <div class="character-message">
+      Elegí una campaña en el menú lateral para ver sus personajes.
+    </div>
+  } @else if (isLoading()) {
+    <div class="character-message" role="status">Cargando personajes...</div>
+  } @else if (errorMessage()) {
+    <div class="character-message character-error" role="alert">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="secondary-button" (click)="retry()">Reintentar</button>
+    </div>
+  } @else if (characters().length === 0) {
+    <div class="character-message">
+      <h2>Todavía no hay personajes</h2>
+      <p>
+        @if (canCreate()) {
+          Creá tu personaje para sumarte a la aventura.
+        } @else {
+          Cuando los jugadores creen sus personajes, van a aparecer acá.
+        }
+      </p>
+    </div>
+  } @else {
+    @if (myCharacters().length > 0) {
+      <section class="character-section">
+        <h2 class="section-title">{{ myCharacters().length === 1 ? 'Mi personaje' : 'Mis personajes' }}</h2>
+        <div class="character-grid">
+          @for (character of myCharacters(); track character.publicId) {
+            <ng-container
+              [ngTemplateOutlet]="card"
+              [ngTemplateOutletContext]="{ $implicit: character, mine: true }"
+            />
+          }
+        </div>
+      </section>
+    }
+
+    @if (partyCharacters().length > 0) {
+      <section class="character-section">
+        <h2 class="section-title">{{ myCharacters().length > 0 ? 'Grupo' : 'Personajes de la campaña' }}</h2>
+        <div class="character-grid">
+          @for (character of partyCharacters(); track character.publicId) {
+            <ng-container
+              [ngTemplateOutlet]="card"
+              [ngTemplateOutletContext]="{ $implicit: character, mine: false }"
+            />
+          }
+        </div>
+      </section>
+    }
+  }
+</section>
+
+<ng-template #card let-character let-mine="mine">
+  <a
+    class="character-card"
+    [class.mine]="mine"
+    [class.dead]="character.status === 'DEAD'"
+    [routerLink]="commands.characterDetail(character.publicId)"
+    [queryParams]="{ campaignId: campaignId() }"
+  >
+    <div class="card-top">
+      <div>
+        <h3>{{ character.name }}</h3>
+        <p class="card-subtitle">
+          {{ character.race }} · {{ character.characterClass }} · Nivel {{ character.level }}
+        </p>
+      </div>
+      <span
+        class="character-status"
+        [class.alive]="character.status === 'ALIVE'"
+        [class.unconscious]="character.status === 'UNCONSCIOUS'"
+        [class.dead]="character.status === 'DEAD'"
+      >
+        {{ getStatusLabel(character.status) }}
+      </span>
+    </div>
+
+    <div class="hp">
+      <div class="hp-bar">
+        <div
+          class="hp-fill"
+          [class.hp-high]="getHpLevel(character) === 'high'"
+          [class.hp-mid]="getHpLevel(character) === 'mid'"
+          [class.hp-low]="getHpLevel(character) === 'low'"
+          [style.width.%]="getHpPercent(character)"
+        ></div>
+      </div>
+      <span class="hp-text">{{ character.currentHP }} / {{ character.maxHP }} PV</span>
+    </div>
+
+    @if (!mine) {
+      <p class="card-owner">Jugador: {{ character.ownerName }}</p>
+    }
+  </a>
+</ng-template>

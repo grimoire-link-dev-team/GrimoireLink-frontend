@@ -1,0 +1,30 @@
+<dialog
+  #dialogRef
+  class="confirm-dialog"
+  aria-labelledby="confirm-title"
+  (cancel)="onCancel($event)"
+  (click)="onBackdropClick($event)"
+>
+  <div class="dialog-content">
+
+    <h2 id="confirm-title">{{ request().title }}</h2>
+
+    <p>{{ request().message }}</p>
+
+    <div class="dialog-actions">
+      <button type="button" class="cancel-button" (click)="close(false)">
+        Cancelar
+      </button>
+
+      <button
+        type="button"
+        class="confirm-button"
+        [class.danger]="request().danger"
+        (click)="close(true)"
+      >
+        {{ request().confirmLabel }}
+      </button>
+    </div>
+
+  </div>
+</dialog>

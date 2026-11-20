@@ -1,0 +1,48 @@
+<section class="campaign-join-page">
+  <header class="join-header">
+    <a [routerLink]="commands.campaigns" class="back-link">Volver a campañas</a>
+    <h1>Unirse a una campaña</h1>
+    <p>Ingresá el código de invitación que te compartió tu Dungeon Master.</p>
+  </header>
+
+  <form class="join-card" [formRoot]="joinForm">
+    <div class="join-card-header">
+      <h2>Código de invitación</h2>
+      <p>Cada campaña tiene un código único de seis dígitos.</p>
+    </div>
+
+    <div class="join-field">
+      <label for="inviteCode">Código de la campaña</label>
+      <input
+        id="inviteCode"
+        type="text"
+        inputmode="numeric"
+        autocomplete="off"
+        placeholder="000000"
+        [formField]="joinForm.inviteCode"
+      />
+      @if (joinForm.inviteCode().touched() && joinForm.inviteCode().invalid()) {
+        @for (error of joinForm.inviteCode().errors(); track error.kind) {
+          <p class="join-error">{{ error.message }}</p>
+        }
+      } @else {
+        <p class="field-hint">Ingresá los seis números del código.</p>
+      }
+    </div>
+
+    @if (errorMessage()) {
+      <p class="join-error" role="alert">{{ errorMessage() }}</p>
+    }
+
+    <div class="join-actions">
+      <button
+        type="submit"
+        class="join-button"
+        [disabled]="joinForm().submitting() || joinForm().invalid()"
+      >
+        {{ joinForm().submitting() ? 'Uniéndote...' : 'Unirse a la campaña' }}
+      </button>
+      <a [routerLink]="commands.campaigns" class="cancel-button">Cancelar</a>
+    </div>
+  </form>
+</section>

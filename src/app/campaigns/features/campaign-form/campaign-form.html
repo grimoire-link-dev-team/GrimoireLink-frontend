@@ -1,0 +1,73 @@
+<section class="campaign-form-page">
+
+  <header class="campaign-header">
+    <div>
+      <h1>Nueva campaña</h1>
+      <p>Completá los datos y empezá tu aventura.</p>
+    </div>
+  </header>
+
+  <form class="campaign-form" [formRoot]="campaignForm">
+
+    <div class="form-intro">
+      <h2>Información de la campaña</h2>
+      <p>Completá los datos principales de tu aventura.</p>
+    </div>
+
+    <div class="form-field">
+      <label for="name">Nombre de la campaña</label>
+
+      <input
+        id="name"
+        type="text"
+        placeholder="Ej. Las sombras de Valdoria"
+        autocomplete="off"
+        [formField]="campaignForm.name"
+      />
+
+      @if (campaignForm.name().touched() && campaignForm.name().invalid()) {
+        @for (error of campaignForm.name().errors(); track error.kind) {
+          <span class="field-error">{{ error.message }}</span>
+        }
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="description">Descripción</label>
+
+      <textarea
+        id="description"
+        rows="6"
+        placeholder="Describí la historia y el mundo de tu aventura..."
+        [formField]="campaignForm.description"
+      ></textarea>
+
+      @if (campaignForm.description().touched() && campaignForm.description().invalid()) {
+        @for (error of campaignForm.description().errors(); track error.kind) {
+          <span class="field-error">{{ error.message }}</span>
+        }
+      }
+    </div>
+
+    <div class="form-note">
+      <p>Al crear la campaña, vas a ser su Dungeon Master.</p>
+    </div>
+
+    @if (errorMessage()) {
+      <p class="form-error" role="alert">{{ errorMessage() }}</p>
+    }
+
+    <div class="form-actions">
+      <a [routerLink]="commands.campaigns" class="cancel-button">Cancelar</a>
+
+      <button
+        type="submit"
+        class="submit-button"
+        [disabled]="campaignForm().submitting() || campaignForm().invalid()"
+      >
+        {{ campaignForm().submitting() ? 'Creando...' : 'Crear campaña' }}
+      </button>
+    </div>
+
+  </form>
+</section>

@@ -1,27 +1,134 @@
-
 <header class="topbar">
 
   <a
     class="brand"
-    routerLink="/"
+    [routerLink]="commands.root"
     aria-label="Ir al inicio de GrimoireLink"
   >
     <img
-  src="/android-chrome-192x192.png"
-  alt="Logo de GrimoireLink"
-  class="brand-logo"
-/>
+      src="/android-chrome-192x192.png"
+      alt="Logo de GrimoireLink"
+      class="brand-logo"
+    />
 
     <span class="brand-name">GrimoireLink</span>
   </a>
 
   <div class="user-info">
 
-    <span class="user-avatar">
-      U
-    </span>
+    @if (auth.isAuthenticated()) {
 
-    <span class="user-name">Usuario</span>
+      <button
+        type="button"
+        class="profile-button"
+        (click)="openEditor()"
+        aria-label="Personalizar perfil"
+        [attr.aria-expanded]="isEditing()"
+      >
+        <img
+          class="user-avatar"
+          [src]="avatarUrl()"
+          alt="Avatar de usuario"
+        />
+
+        <span class="user-name">
+          {{ displayName() }}
+        </span>
+      </button>
+
+      <button
+        type="button"
+        class="logout-button"
+        (click)="logout()"
+      >
+        Cerrar sesión
+      </button>
+
+      @if (isEditing()) {
+
+        <section class="profile-editor">
+
+          <h3>Mi perfil</h3>
+
+          <label for="nickname">
+            Nombre de usuario
+          </label>
+
+          <input
+            id="nickname"
+            type="text"
+            placeholder="Tu nombre de usuario"
+            [formField]="profileForm.nickname"
+          />
+
+          <p class="profile-hint">
+            Entre 3 y 24 caracteres.
+          </p>
+
+          <label>Seleccionar avatar</label>
+
+          <div
+            class="avatar-grid"
+            role="group"
+            aria-label="Avatares disponibles"
+          >
+            @for (avatar of avatars; track avatar.id) {
+
+              <button
+                type="button"
+                class="avatar-option"
+                [class.selected]="avatarInput() === avatar.id"
+                [attr.aria-pressed]="avatarInput() === avatar.id"
+                [attr.aria-label]="avatar.name"
+                [title]="avatar.name"
+                (click)="selectAvatar(avatar.id)"
+              >
+                <img
+                  [src]="getAvatarUrl(avatar.id)"
+                  [alt]="avatar.name"
+                />
+              </button>
+
+            }
+          </div>
+
+          <p class="profile-hint">
+            Avatar seleccionado:
+            {{ avatarInput() }}
+          </p>
+
+          <div class="profile-actions">
+
+            <button
+              type="button"
+              class="cancel-button"
+              (click)="cancelEditing()"
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="button"
+              class="save-button"
+              [disabled]="profileForm().invalid()"
+              (click)="saveProfile()"
+            >
+              Guardar cambios
+            </button>
+
+          </div>
+
+        </section>
+
+      }
+
+    } @else {
+
+      <a class="login-link" [routerLink]="commands.login">
+        Iniciar sesión
+      </a>
+
+    }
 
   </div>
 

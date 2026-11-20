@@ -1,0 +1,107 @@
+<!-- Oro -->
+
+<section class="card gold">
+  <div class="gold-total">
+    <span>Oro</span>
+    <strong>{{ character().gold }} po</strong>
+  </div>
+
+  @if (canEdit()) {
+    <div class="gold-actions">
+      <button
+        type="button"
+        class="btn"
+        aria-label="Restar oro"
+        [disabled]="pendingId() === 'gold'"
+        (click)="changeGold(-1)"
+      >
+        −
+      </button>
+
+      <input type="number" aria-label="Cantidad de oro" [formField]="goldForm.amount" />
+
+      <button
+        type="button"
+        class="btn"
+        aria-label="Sumar oro"
+        [disabled]="pendingId() === 'gold'"
+        (click)="changeGold(1)"
+      >
+        +
+      </button>
+    </div>
+
+    @if (goldForm.amount().touched() && goldForm.amount().invalid()) {
+      @for (error of goldForm.amount().errors(); track error.kind) {
+        <p class="error">{{ error.message }}</p>
+      }
+    }
+  }
+</section>
+
+@if (errorMessage()) {
+  <p class="error" role="alert">{{ errorMessage() }}</p>
+}
+
+<div class="layout" [class.single]="!canEdit()">
+
+  <!-- Objetos del personaje -->
+
+  <section class="card">
+    <div class="card-header">
+      <h2>Objetos</h2>
+      <span class="muted">{{ equippedCount() }} equipados · {{ items().length }} en total</span>
+    </div>
+
+    @for (item of items(); track item.publicId) {
+      <div class="row">
+        <div>
+          <strong>{{ item.name }}</strong>
+          <span class="muted">x{{ item.quantity }}</span>
+        </div>
+
+        @if (canEdit()) {
+          <div class="actions">
+            <button
+              type="button"
+              class="btn"
+              [class.on]="item.equipped"
+              [disabled]="pendingId() === item.publicId"
+              (click)="toggleEquipped(item)"
+            >
+              {{ item.equipped ? '✓ Equipado' : 'Equipar' }}
+            </button>
+
+            <button
+              type="button"
+              class="btn"
+              aria-label="Quitar objeto"
+              [disabled]="pendingId() === item.publicId"
+              (click)="removeItem(item)"
+            >
+              Quitar
+            </button>
+          </div>
+        } @else if (item.equipped) {
+          <span class="tag">Equipado</span>
+        }
+      </div>
+    } @empty {
+      <p class="muted">El inventario está vacío.</p>
+    }
+  </section>
+
+  <!-- Agregar objeto -->
+
+  @if (canEdit()) {
+    <section class="card">
+      <h2>Agregar objeto</h2>
+
+      <app-item-picker
+        [ownedIndexes]="ownedIndexes()"
+        [pendingIndex]="pendingId()"
+        (picked)="addItem($event)"
+      />
+    </section>
+  }
+</div>

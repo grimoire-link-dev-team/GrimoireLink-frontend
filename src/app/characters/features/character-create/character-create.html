@@ -1,0 +1,526 @@
+<section class="character-create">
+
+  <!-- Encabezado -->
+
+  <header class="create-header">
+    <div>
+      <p class="breadcrumb">
+        <a [routerLink]="commands.characters">Personajes</a> / Nuevo personaje
+      </p>
+
+      <h1>Da forma a tu personaje</h1>
+
+      <p class="subtitle">
+        D&amp;D 5e
+        @if (draftModel().name) {
+          · Borrador de {{ draftModel().name }}
+        }
+        @if (lastSavedAt()) {
+          · Guardado automaticamente
+        }
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="ghost-button" (click)="discardDraft()">
+        Descartar borrador
+      </button>
+
+      <button type="button" class="outline-button" (click)="saveAndExit()">
+        Guardar y salir
+      </button>
+    </div>
+  </header>
+
+  <!-- Pasos -->
+
+  <ol class="stepper">
+    @for (step of steps; track step.number) {
+      <li>
+        <button
+          type="button"
+          class="step"
+          [class.active]="currentStep() === step.number"
+          [class.done]="step.number < maxReachedStep() && stepValid()[step.number]"
+          [disabled]="step.number > maxReachedStep()"
+          (click)="goToStep(step.number)"
+        >
+          @if (step.number < maxReachedStep() && stepValid()[step.number] && currentStep() !== step.number) {
+            ✓
+          } @else {
+            {{ step.number }}
+          }
+          {{ step.label }}
+        </button>
+      </li>
+    }
+  </ol>
+
+  <form class="create-layout" [formRoot]="characterForm">
+
+    <div class="create-main">
+
+      <!-- Paso 1: Identidad -->
+
+      @if (currentStep() === 1) {
+        <section class="panel">
+          <header class="panel-header">
+            <h2>Identidad del personaje</h2>
+            <span>Paso 1 de 4</span>
+          </header>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="name">Nombre del personaje *</label>
+              <input id="name" type="text" autocomplete="off" placeholder="Ej. Kael Roblegris"
+                     [formField]="characterForm.name" />
+              @if (characterForm.name().touched() && characterForm.name().invalid()) {
+                @for (error of characterForm.name().errors(); track error.kind) {
+                  <p class="field-error">{{ error.message }}</p>
+                }
+              }
+            </div>
+
+            <div class="field">
+              <label for="race">Linaje *</label>
+              <select id="race" [formField]="characterForm.raceIndex">
+                <option value="">Seleccioná un linaje</option>
+                @for (race of races(); track race.index) {
+                  <option [value]="race.index">{{ race.name }}</option>
+                }
+              </select>
+              @if (characterForm.raceIndex().touched() && characterForm.raceIndex().invalid()) {
+                @for (error of characterForm.raceIndex().errors(); track error.kind) {
+                  <p class="field-error">{{ error.message }}</p>
+                }
+              }
+            </div>
+
+            <div class="field">
+              <label for="class">Clase *</label>
+              <select id="class" [formField]="characterForm.classIndex">
+                <option value="">Seleccioná una clase</option>
+                @for (item of classes(); track item.index) {
+                  <option [value]="item.index">{{ item.name }}</option>
+                }
+              </select>
+              @if (characterForm.classIndex().touched() && characterForm.classIndex().invalid()) {
+                @for (error of characterForm.classIndex().errors(); track error.kind) {
+                  <p class="field-error">{{ error.message }}</p>
+                }
+              }
+            </div>
+
+            <div class="field">
+              <label for="background">Trasfondo *</label>
+              <select id="background" [formField]="characterForm.backgroundIndex">
+                <option value="">Seleccioná un trasfondo</option>
+                @for (item of backgrounds(); track item.index) {
+                  <option [value]="item.index">{{ item.name }}</option>
+                }
+              </select>
+              @if (characterForm.backgroundIndex().touched() && characterForm.backgroundIndex().invalid()) {
+                @for (error of characterForm.backgroundIndex().errors(); track error.kind) {
+                  <p class="field-error">{{ error.message }}</p>
+                }
+              }
+            </div>
+
+            <div class="field">
+              <label for="level">Nivel inicial *</label>
+              <input id="level" type="number" [formField]="characterForm.level" />
+              @if (characterForm.level().touched() && characterForm.level().invalid()) {
+                @for (error of characterForm.level().errors(); track error.kind) {
+                  <p class="field-error">{{ error.message }}</p>
+                }
+              }
+            </div>
+
+            @if (showSubclass()) {
+              <div class="field">
+                <label for="subclass">Subclase</label>
+                <select id="subclass" [formField]="characterForm.subclassIndex">
+                  <option value="">Sin subclase por ahora</option>
+                  @for (item of classDetails.value()?.subclasses ?? []; track item.index) {
+                    <option [value]="item.index">{{ item.name }}</option>
+                  }
+                </select>
+              </div>
+            }
+          </div>
+
+          @if (selectedBackground(); as background) {
+            <p class="field-note">{{ background.description }}</p>
+          }
+        </section>
+      }
+
+      <!-- Paso 2: Características -->
+
+      @if (currentStep() === 2) {
+        <section class="panel">
+          <header class="panel-header">
+            <h2>Características</h2>
+            <span>Paso 2 de 4</span>
+          </header>
+
+          <div class="method-row">
+            <div class="field">
+              <label for="method">Método de puntuación</label>
+              <select
+                id="method"
+                [value]="draftModel().method"
+                (change)="changeMethod($any($event.target).value)"
+              >
+                @for (method of scoreMethods; track method.value) {
+                  <option [value]="method.value">{{ method.label }}</option>
+                }
+              </select>
+            </div>
+
+            <button type="button" class="outline-button" (click)="resetScores()">
+              Restablecer
+            </button>
+          </div>
+
+          <p class="field-note">
+            {{ scoreHint() }}
+            @if (draftModel().method === 'point-buy' && pointsSpent() !== null) {
+              Puntos usados: {{ pointsSpent() }} / {{ pointBuyBudget }}.
+            }
+          </p>
+
+          <div class="ability-grid">
+            @for (ability of abilityList; track ability.key) {
+              <div class="ability-card">
+                <label [for]="'ability-' + ability.key">{{ ability.name }}</label>
+
+                <input
+                  [id]="'ability-' + ability.key"
+                  type="number"
+                  [formField]="characterForm.scores[ability.key]"
+                />
+
+                <span class="ability-final">
+                  @if (racialBonuses()[ability.key]; as bonus) {
+                    {{ finalScores()[ability.key] }} ({{ formatBonus(bonus) }} linaje) ·
+                  }
+                  {{ formatBonus(finalModifiers()[ability.key]) }} mod.
+                </span>
+              </div>
+            }
+          </div>
+
+          @if (racialBonusText()) {
+            <p class="field-note">Incluye bonificaciones de linaje: {{ racialBonusText() }}.</p>
+          }
+
+          @if (characterForm.scores().invalid()) {
+            @for (error of characterForm.scores().errors(); track error.kind) {
+              <p class="field-error">{{ error.message }}</p>
+            }
+          }
+
+          <hr />
+
+          @if (skillChoice(); as choice) {
+            <h3>Competencias de clase · Elegí {{ choice.choose }}</h3>
+
+            <div class="skill-grid">
+              @for (skill of skillOptions(); track skill.index) {
+                <label class="checkbox">
+                  <input
+                    type="checkbox"
+                    [checked]="draftModel().skills.includes(skill.index)"
+                    [disabled]="isSkillDisabled(skill.index)"
+                    (change)="toggleSkill(skill.index)"
+                  />
+                  {{ skill.name }}
+                </label>
+              }
+            </div>
+
+            <p class="field-note">
+              {{ draftModel().skills.length }} de {{ choice.choose }} seleccionadas.
+            </p>
+
+            @if (characterForm.skills().touched() && characterForm.skills().invalid()) {
+              @for (error of characterForm.skills().errors(); track error.kind) {
+                <p class="field-error">{{ error.message }}</p>
+              }
+            }
+          } @else if (classDetails.isLoading()) {
+            <p class="field-note">Cargando competencias de la clase...</p>
+          }
+        </section>
+      }
+
+      <!-- Paso 3: Equipo -->
+
+      @if (currentStep() === 3) {
+        <section class="panel">
+          <header class="panel-header">
+            <h2>Equipo</h2>
+            <span>Paso 3 de 4</span>
+          </header>
+
+          <!-- Solapas: Inventario / Hechizos -->
+
+          <div class="equipment-tabs" role="tablist" aria-label="Equipo inicial">
+            <button
+              type="button"
+              role="tab"
+              [class.active]="equipmentTab() === 'inventory'"
+              [attr.aria-selected]="equipmentTab() === 'inventory'"
+              (click)="selectEquipmentTab('inventory')"
+            >
+              Inventario
+              <span class="tab-count">{{ draftModel().items.length }}</span>
+            </button>
+
+            <button
+              type="button"
+              role="tab"
+              [class.active]="equipmentTab() === 'spells'"
+              [class.invalid]="characterForm.spells().invalid()"
+              [attr.aria-selected]="equipmentTab() === 'spells'"
+              (click)="selectEquipmentTab('spells')"
+            >
+              Hechizos
+              <span class="tab-count">{{ draftModel().spells.length }}</span>
+            </button>
+          </div>
+
+          <!-- Solapa Inventario -->
+
+          @if (equipmentTab() === 'inventory') {
+            <div class="field-grid">
+              <div class="field">
+                <label for="gold">Oro inicial (po)</label>
+                <input id="gold" type="number" [formField]="characterForm.gold" />
+                @if (characterForm.gold().touched() && characterForm.gold().invalid()) {
+                  @for (error of characterForm.gold().errors(); track error.kind) {
+                    <p class="field-error">{{ error.message }}</p>
+                  }
+                }
+              </div>
+            </div>
+
+            <h3>Objetos iniciales</h3>
+
+            <div class="picked-list">
+              @for (item of draftModel().items; track item.itemIndex) {
+                <span class="picked">
+                  {{ item.name }}
+                  <button type="button" aria-label="Quitar objeto" (click)="removeDraftItem(item.itemIndex)">×</button>
+                </span>
+              } @empty {
+                <p class="field-note">Todavía no elegiste objetos. Es opcional.</p>
+              }
+            </div>
+
+            <app-item-picker
+              [ownedIndexes]="pickedItemIndexes()"
+              (picked)="addDraftItem($event)"
+            />
+          }
+
+          <!-- Solapa Hechizos -->
+
+          @if (equipmentTab() === 'spells') {
+            @if (canCastNow()) {
+              <p class="field-note">
+                Trucos {{ pickedCantrips() }} / {{ cantripsAllowed() }}
+                @if (spellsAllowed()) {
+                  · Conjuros {{ pickedLeveled() }} / {{ spellsAllowed() }}
+                } @else {
+                  · Conjuros sin tope (tu clase los prepara)
+                }
+              </p>
+
+              <div class="picked-list">
+                @for (spell of draftModel().spells; track spell.index) {
+                  <span class="picked">
+                    {{ spell.name }} <small>{{ spellLevelLabel(spell.level) }}</small>
+                    <button type="button" aria-label="Quitar hechizo" (click)="removeDraftSpell(spell.index)">×</button>
+                  </span>
+                } @empty {
+                  <p class="field-note">Todavía no elegiste hechizos. Es opcional.</p>
+                }
+              </div>
+
+              @if (characterForm.spells().invalid()) {
+                @for (error of characterForm.spells().errors(); track error.kind) {
+                  <p class="field-error">{{ error.message }}</p>
+                }
+              }
+
+              <app-spell-picker
+                [spells]="classSpells.value() ?? []"
+                [loading]="classSpells.isLoading()"
+                [failed]="!!classSpells.error()"
+                [maxSpellLevel]="maxSpellLevel()"
+                [allowCantrips]="cantripsAllowed() > 0"
+                [cantripLimitReached]="cantripLimitReached()"
+                [spellLimitReached]="spellLimitReached()"
+                [excludedNames]="pickedSpellNames()"
+                (picked)="addDraftSpell($event)"
+              />
+            } @else if (classLevel.isLoading()) {
+              <p class="field-note">Cargando conjuros de la clase...</p>
+            } @else {
+              <p class="field-note">
+                {{ selectedClass()?.name ?? 'Tu clase' }} no lanza conjuros en nivel {{ draftModel().level }}.
+              </p>
+            }
+          }
+        </section>
+      }
+
+      <!-- Paso 4: Revisar y crear -->
+
+      @if (currentStep() === 4) {
+        <section class="panel">
+          <header class="panel-header">
+            <h2>Revisar y crear</h2>
+            <span>Paso 4 de 4</span>
+          </header>
+
+          <dl class="review-list">
+            <dt>Nombre</dt><dd>{{ draftModel().name }}</dd>
+            <dt>Linaje</dt><dd>{{ selectedRace()?.name }}</dd>
+            <dt>Clase</dt>
+            <dd>
+              {{ selectedClass()?.name }}
+              @if (showSubclass() && subclassName()) { · {{ subclassName() }} }
+            </dd>
+            <dt>Trasfondo</dt><dd>{{ selectedBackground()?.name }}</dd>
+            <dt>Nivel</dt><dd>{{ draftModel().level }}</dd>
+            <dt>Oro</dt><dd>{{ draftModel().gold }} po</dd>
+            <dt>Objetos</dt>
+            <dd>
+              @for (item of draftModel().items; track item.itemIndex; let last = $last) {
+                {{ item.name }}@if (!last) {, }
+              } @empty { — }
+            </dd>
+            @if (canCastNow()) {
+              <dt>Hechizos</dt>
+              <dd>
+                @for (spell of draftModel().spells; track spell.index; let last = $last) {
+                  {{ spell.name }}@if (!last) {, }
+                } @empty { — }
+              </dd>
+            }
+          </dl>
+
+          <div class="review-abilities">
+            @for (ability of abilityList; track ability.key) {
+              <div>
+                <span>{{ ability.name }}</span>
+                <strong>{{ finalScores()[ability.key] }}</strong>
+              </div>
+            }
+          </div>
+
+          <p class="field-note">
+            Las competencias de trasfondo y los rasgos de clase y linaje los asigna el servidor al crear.
+          </p>
+
+          @if (submitError()) {
+            <p class="form-error" role="alert">{{ submitError() }}</p>
+          }
+        </section>
+      }
+
+      <!-- Navegación -->
+
+      <div class="wizard-actions">
+        @if (currentStep() > 1) {
+          <button type="button" class="outline-button" (click)="previous()">
+            ← Anterior: {{ steps[currentStep() - 2].label }}
+          </button>
+        } @else {
+          <span></span>
+        }
+
+        @if (currentStep() < steps.length) {
+          <button type="button" class="primary-button" (click)="next()">
+            Continuar: {{ steps[currentStep()].label }} →
+          </button>
+        } @else if (createdCharacterId()) {
+          <button type="button" class="primary-button" (click)="goToCreatedCharacter()">
+            Ir a la ficha →
+          </button>
+        } @else {
+          <button
+            type="submit"
+            class="primary-button"
+            [disabled]="characterForm().submitting() || characterForm().invalid() || isDungeonMasterOfSelection()"
+          >
+            {{ characterForm().submitting() ? 'Creando...' : 'Crear personaje' }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Columna lateral -->
+
+    <aside class="create-aside">
+
+      <section class="panel summary-card">
+        <header class="panel-header">
+          <h2>Resumen de ficha</h2>
+          <span>Provisional</span>
+        </header>
+
+        <span class="badge">Borrador</span>
+
+        <p class="summary-name">{{ draftModel().name || 'Sin nombre' }}</p>
+
+        <p class="summary-line">
+          {{ selectedRace()?.name ?? 'Linaje' }} ·
+          {{ selectedClass()?.name ?? 'Clase' }} ·
+          {{ selectedBackground()?.name ?? 'Trasfondo' }}
+        </p>
+
+        <dl class="summary-stats">
+          <dt>Nivel inicial</dt><dd>{{ draftModel().level }}</dd>
+          <dt>Puntos de vida maximos</dt><dd>{{ maxHp() ?? '—' }}</dd>
+          <dt>Bonificación de competencia</dt><dd>{{ formatBonus(proficiency()) }}</dd>
+          <dt>Iniciativa</dt><dd>{{ formatBonus(initiative()) }}</dd>
+          <dt>Velocidad</dt><dd>{{ speed() !== null ? speed() + ' m' : '—' }}</dd>
+        </dl>
+
+        <p class="field-note">
+          La armadura y los ataques aparecerán cuando elijas tu equipo.
+        </p>
+      </section>
+
+      <section class="panel">
+        <header class="panel-header">
+          <h2>Campaña</h2>
+        </header>
+
+        <div class="field">
+          @if (campaignContext.selectedCampaign(); as campaign) {
+            <p>Personaje para: <strong>{{ campaign.name }}</strong></p>
+            <p class="field-note">Para crearlo en otra campaña, cambiala desde el menú lateral.</p>
+          } @else {
+            <p class="field-error">
+              No tenés una campaña seleccionada. Elegí una en el menú lateral o
+              <a [routerLink]="commands.joinCampaign">unite a una campaña</a>.
+            </p>
+          }
+        </div>
+
+        @if (isDungeonMasterOfSelection()) {
+          <p class="field-error">Sos el Dungeon Master de esta campaña: no podés crear personajes en ella.</p>
+        }
+
+        @if (!stepValid()[1] || !stepValid()[2]) {
+          <p class="field-note">Completá la identidad y las características antes de crear el personaje.</p>
+        }
+      </section>
+    </aside>
+  </form>
+</section>

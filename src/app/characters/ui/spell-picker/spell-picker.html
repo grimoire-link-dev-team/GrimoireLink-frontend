@@ -1,0 +1,54 @@
+<input
+  type="search"
+  placeholder="Buscar conjuro..."
+  aria-label="Buscar conjuro"
+  [formField]="searchForm.search"
+/>
+
+<div class="filters">
+  <button type="button" class="chip" [class.on]="levelFilter() === null" (click)="setLevelFilter(null)">
+    Todos
+  </button>
+  @for (level of levelOptions(); track level) {
+    <button type="button" class="chip" [class.on]="levelFilter() === level" (click)="setLevelFilter(level)">
+      {{ levelLabel(level) }}
+    </button>
+  }
+</div>
+
+@if (loading()) {
+  <p class="muted">Cargando conjuros de la clase...</p>
+} @else if (failed()) {
+  <p class="error">No se pudo cargar la lista de conjuros.</p>
+} @else {
+  @for (spell of visible(); track spell.index) {
+    <div class="row">
+      <div>
+        <strong>{{ spell.name }}</strong>
+        <span class="muted">{{ levelLabel(spell.level) }}</span>
+      </div>
+
+      @if (isBlocked(spell)) {
+        <span class="tag">Tope alcanzado</span>
+      } @else {
+        <button
+          type="button"
+          class="btn"
+          aria-label="Agregar hechizo"
+          [disabled]="pendingIndex() === spell.index"
+          (click)="picked.emit(spell)"
+        >
+          + Agregar
+        </button>
+      }
+    </div>
+  } @empty {
+    <p class="muted">No hay conjuros disponibles con ese filtro.</p>
+  }
+
+  @if (hiddenResults()) {
+    <p class="muted">Y {{ hiddenResults() }} más. Refiná la búsqueda.</p>
+  }
+}
+
+<p class="muted">Solo conjuros de tu clase hasta el nivel {{ maxSpellLevel() }}.</p>

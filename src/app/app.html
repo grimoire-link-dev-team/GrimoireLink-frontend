@@ -1,1 +1,7 @@
 <router-outlet></router-outlet>
+
+<app-notification-host />
+
+@if (confirmation.request(); as request) {
+  <app-confirm-dialog [request]="request" />
+}

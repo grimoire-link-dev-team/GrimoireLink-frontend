@@ -1,5 +1,6 @@
-
 <aside class="sidebar" aria-label="Navegación principal">
+
+  <!-- Main Navigation -->
 
   <div class="nav-section-label">
     MI CUADERNO
@@ -9,7 +10,7 @@
 
     <a
       class="nav-link"
-      routerLink="/inicio"
+      [routerLink]="commands.home"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
     >
@@ -18,140 +19,316 @@
 
     <a
       class="nav-link"
-      routerLink="/personajes"
+      [routerLink]="commands.characters"
       routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
     >
       Personajes
     </a>
 
     <a
       class="nav-link"
-      routerLink="/campanias"
+      [routerLink]="commands.campaigns"
       routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
     >
       Campañas
     </a>
 
     <a
       class="nav-link"
-      routerLink="/diario"
+      [routerLink]="commands.journal"
       routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
     >
       Diario
     </a>
 
+    <a
+      class="nav-link"
+      [routerLink]="commands.monsters"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Bestiario
+    </a>
+
   </nav>
 
-<section class="current-campaign" aria-labelledby="campaign-title">
+  <!-- Current Campaign -->
 
-  <div class="campaign-header">
-    <span class="campaign-icon" aria-hidden="true">
-    </span>
-
-    <h3 id="campaign-title">
-      Campaña actual
-    </h3>
-  </div>
-
-  <div class="campaign-content">
-
-    <p class="campaign-name">
-      Sin campaña seleccionada
-    </p>
-
-    <p class="campaign-description">
-      Elige una campaña para comenzar tu aventura.
-    </p>
-
-  </div>
-
-  <a
-    class="campaign-button"
-    routerLink="/campanias"
+  <section
+    class="current-campaign"
+    aria-labelledby="campaign-title"
   >
-    Ver campañas
-  </a>
 
-</section>
+    <h3 id="campaign-title" class="campaign-title">
+      CAMPAÑA ACTUAL
+    </h3>
 
-<section class="view-selector">
+    @if (campaignContext.isLoading()) {
 
-  <h3 class="view-title">
-    VISTA ACTUAL
-  </h3>
+      <p class="campaign-description">
+        Cargando campañas...
+      </p>
 
-  <div class="view-info">
+    } @else if (campaignContext.selectedCampaign(); as campaign) {
 
-    <div class="view-details">
+      <div class="campaign-details">
 
-      <span class="view-name">
-        @if (isDungeonMaster()) {
-          Dungeon Master
-        } @else {
-          Jugador
+        <p class="campaign-name">
+          {{ campaign.name }}
+        </p>
+
+        @if (campaign.description) {
+          <p class="campaign-description">
+            {{ campaign.description }}
+          </p>
         }
-      </span>
 
-      <span class="view-description">
-        @if (isDungeonMaster()) {
-          Administracion de campaña
-        } @else {
-          Vista de participante
+        <p class="campaign-description">
+          Estado: {{ getStatusLabel(campaign.status) }}
+        </p>
+
+        <a
+          class="campaign-button"
+          [routerLink]="commands.campaignDetail(campaign.publicId)"
+        >
+          Ver campaña
+        </a>
+
+      </div>
+
+    } @else {
+
+      <p class="campaign-description">
+        Sin campaña seleccionada.
+      </p>
+
+      <a class="campaign-button" [routerLink]="commands.campaigns">
+        Ver campañas
+      </a>
+
+    }
+
+    @if (campaignContext.campaigns().length > 1) {
+
+      <label for="currentCampaign" class="campaign-label">
+        Cambiar campaña
+      </label>
+
+      <select
+        id="currentCampaign"
+        class="campaign-select"
+        #campaignSelect
+        (change)="campaignContext.selectCampaign(campaignSelect.value)"
+      >
+
+        <option value="" [selected]="!campaignContext.selectedId()">
+          Seleccionar campaña
+        </option>
+
+        @for (
+          campaign of campaignContext.campaigns();
+          track campaign.publicId
+        ) {
+
+          <option
+            [value]="campaign.publicId"
+            [selected]="campaign.publicId === campaignContext.selectedId()"
+          >
+            {{ campaign.name }}
+          </option>
+
         }
-      </span>
 
+      </select>
+
+    }
+
+  </section>
+
+  <!-- Current View -->
+
+  <section class="view-selector">
+
+    <h3 class="view-title">
+      VISTA ACTUAL
+    </h3>
+
+    @if (campaignContext.isRoleLoading()) {
+
+      <p class="view-description">
+        Cargando vista...
+      </p>
+
+    } @else if (campaignContext.currentView(); as view) {
+
+      <div class="view-details">
+
+        <span class="view-name">
+          {{ view }}
+        </span>
+
+        <span class="view-description">
+
+          @if (campaignContext.isDungeonMasterView()) {
+            Administración de campaña
+          } @else {
+            Vista de participante
+          }
+
+        </span>
+
+      </div>
+
+      @if (campaignContext.isRealDungeonMaster()) {
+
+        <button
+          type="button"
+          class="change-view-button"
+          (click)="changeView()"
+        >
+          <span aria-hidden="true">⇄</span>
+          Cambiar vista
+        </button>
+
+      }
+
+    } @else {
+
+      <p class="view-description">
+        @if (campaignContext.roleError()) {
+          {{ campaignContext.roleError() }}
+        } @else {
+          Seleccioná una campaña.
+        }
+      </p>
+
+    }
+
+  </section>
+
+  <!-- DM Tools -->
+
+  @if (campaignContext.isDungeonMasterView()) {
+
+    <div class="nav-section-label secondary-label">
+      HERRAMIENTAS DM
     </div>
 
-  </div>
+    <nav class="nav-list" aria-label="Herramientas DM">
 
-  <label for="viewMode" class="view-label">
-    Seleccionar vista
-  </label>
+      <a
+        class="nav-link"
+        [routerLink]="commands.dice"
+        routerLinkActive="active"
+      >
+        Dados rápidos
+      </a>
 
-  <select
-    id="viewMode"
-    name="viewMode"
-    class="view-select"
-    [(ngModel)]="selectedView"
-  >
-    <option value="Dungeon Master">
-      Dungeon Master
-    </option>
+    </nav>
 
-    <option value="player">
-      Jugador
-    </option>
-  </select>
+  }
 
-</section>
-@if (isDungeonMaster()) {
+  <!-- Campaign Summaries -->
 
-  <div class="nav-section-label secondary-label">
-    DM
-  </div>
+  @if (campaignContext.selectedCampaign() && campaignContext.selectedRole()) {
 
-  <nav class="nav-list" aria-label="Dungeon Master">
+    <!-- Latest Journal Entry -->
 
-    <a
-      class="nav-link"
-      routerLink="/monstruos"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
+    <section
+      class="sidebar-summary"
+      aria-labelledby="latest-journal-title"
     >
-      Monstruos
-    </a>
 
-    <a
-      class="nav-link"
-      routerLink="/encuentros"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
+      <h3 id="latest-journal-title" class="campaign-title">
+        ULTIMA ENTRADA DEL DIARIO
+      </h3>
+
+      @if (summaryLoading()) {
+
+        <p class="summary-text">
+          Cargando...
+        </p>
+
+      } @else if (latestJournal(); as entry) {
+
+        <p class="summary-meta">
+          {{ entry.date | date:'dd/MM/yyyy' }}
+        </p>
+
+        <p class="summary-text">
+          {{ entry.description }}
+        </p>
+
+      } @else if (journalUnavailable()) {
+
+        <p class="summary-text">
+          No se pudo consultar el diario.
+        </p>
+
+      } @else {
+
+        <p class="summary-text">
+          Todavía no hay entradas.
+        </p>
+
+      }
+
+      <a class="campaign-button" [routerLink]="commands.journal">
+        Ver diario
+      </a>
+
+    </section>
+
+    <!-- Campaign Characters -->
+
+    <section
+      class="sidebar-summary"
+      aria-labelledby="campaign-characters-title"
     >
-      Encuentros
-    </a>
 
-  </nav>
-}
+      <h3 id="campaign-characters-title" class="campaign-title">
+        PERSONAJES DE CAMPAÑA
+      </h3>
+
+      @if (summaryLoading()) {
+
+        <p class="summary-text">
+          Cargando...
+        </p>
+
+      } @else if (charactersUnavailable()) {
+
+        <p class="summary-text">
+          No se pudieron consultar los personajes.
+        </p>
+
+      } @else {
+
+        <p class="summary-meta">
+          {{ characters().length }}
+          {{ characters().length === 1 ? 'personaje' : 'personajes' }}
+        </p>
+
+        @for (
+          character of characters().slice(0, 2);
+          track character.publicId
+        ) {
+
+          <p class="summary-text">
+            <strong>{{ character.name }}</strong>
+            - Nivel {{ character.level }}
+          </p>
+
+        }
+
+      }
+
+      <a class="campaign-button" [routerLink]="commands.characters">
+        Ver personajes
+      </a>
+
+    </section>
+
+  }
+
+</aside>

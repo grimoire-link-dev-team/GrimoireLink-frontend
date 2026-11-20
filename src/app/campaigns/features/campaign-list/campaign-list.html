@@ -1,0 +1,80 @@
+<section class="campaign-page">
+  <header class="campaign-header">
+    <div>
+      <h1>Tus campañas</h1>
+      <p>Consultá y administrá tus aventuras.</p>
+    </div>
+
+    <div class="campaign-actions">
+      <a [routerLink]="commands.joinCampaign" class="detail-button">Unirse a campaña</a>
+      <a [routerLink]="commands.newCampaign" class="create-button">+ Crear campaña</a>
+    </div>
+  </header>
+
+  <div class="campaign-filters">
+    <div class="filter-field">
+      <label for="search">Buscar campaña</label>
+      <input
+        id="search"
+        type="text"
+        placeholder="Buscar por nombre..."
+        [formField]="filtersForm.search"
+      />
+    </div>
+
+    <div class="filter-field">
+      <label for="status">Estado</label>
+      <select id="status" [formField]="filtersForm.status">
+        <option value="ALL">Todas</option>
+        <option value="ACTIVE">Activas</option>
+        <option value="PAUSED">Pausadas</option>
+        <option value="FINISHED">Finalizadas</option>
+      </select>
+    </div>
+
+    <button type="button" class="clear-button" (click)="clearFilters()">Limpiar</button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="campaign-message" role="status">Cargando campañas...</div>
+  } @else if (errorMessage()) {
+    <div class="campaign-message campaign-error" role="alert">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="clear-button" (click)="loadCampaigns()">Reintentar</button>
+    </div>
+  } @else if (campaigns().length === 0) {
+    <div class="campaign-message">
+      <h2>Todavía no tenés campañas</h2>
+      <p>Creá una campaña o unite a una aventura con un código de invitación.</p>
+    </div>
+  } @else if (filteredCampaigns().length === 0) {
+    <div class="campaign-message">
+      <h2>Sin resultados</h2>
+      <p>No encontramos campañas que coincidan con tu búsqueda.</p>
+      <button type="button" class="clear-button" (click)="clearFilters()">Limpiar filtros</button>
+    </div>
+  } @else {
+    <div class="campaign-list">
+      @for (campaign of filteredCampaigns(); track campaign.publicId) {
+        <article class="campaign-card">
+          <div class="campaign-info">
+            <h2>{{ campaign.name }}</h2>
+            <p>{{ campaign.description || 'Sin descripción' }}</p>
+          </div>
+
+          <div class="campaign-actions">
+            <span
+              class="campaign-status"
+              [class.active]="campaign.status === 'ACTIVE'"
+              [class.paused]="campaign.status === 'PAUSED'"
+              [class.finished]="campaign.status === 'FINISHED'"
+            >
+              {{ getStatusLabel(campaign.status) }}
+            </span>
+            <a [routerLink]="commands.campaignDetail(campaign.publicId)" class="detail-button">Ver detalle</a>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

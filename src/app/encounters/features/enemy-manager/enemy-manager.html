@@ -1,0 +1,197 @@
+<section class="enemy-manager">
+
+  <header class="enemy-header">
+
+    <div>
+      <h2>Enemigos del encuentro</h2>
+
+      @if (canEdit()) {
+        <p>Administrá los enemigos de tu encuentro.</p>
+      }
+    </div>
+
+  </header>
+
+  <!-- DM Monster Search -->
+
+  @if (canEdit()) {
+
+    <div class="enemy-search">
+
+      <label for="monster-search">
+        Buscar monstruo
+      </label>
+
+      <input
+        id="monster-search"
+        type="text"
+        placeholder="Ej. Goblin, Dragon, Skeleton..."
+        [formField]="searchForm.term"
+      />
+
+      <div class="monster-results">
+
+        @if (catalog.isLoading()) {
+          <p>Cargando monstruos...</p>
+        } @else if (catalog.error()) {
+          <p class="enemy-error">No se pudo cargar el catálogo de monstruos.</p>
+        } @else {
+
+          @for (
+            monster of filteredMonsters();
+            track monster.index
+          ) {
+
+            <button
+              type="button"
+              class="monster-option"
+              [class.selected]="selectedMonster()?.index === monster.index"
+              (click)="selectMonster(monster)"
+            >
+              {{ monster.name }}
+            </button>
+
+          } @empty {
+
+            <p>No se encontraron monstruos.</p>
+
+          }
+
+        }
+
+      </div>
+
+      @if (selectedMonster(); as monster) {
+
+        <div class="selected-monster">
+
+          <span>
+            Seleccionado: {{ monster.name }}
+          </span>
+
+          <button
+            type="button"
+            class="primary-button"
+            [disabled]="isSaving() || !encounter.hasValue()"
+            (click)="addMonster()"
+          >
+            Agregar al encuentro
+          </button>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+  @if (errorMessage()) {
+
+    <p class="enemy-error" role="alert">
+      {{ errorMessage() }}
+    </p>
+
+  }
+
+  <!-- Encounter Monsters -->
+
+  <section class="encounter-enemies">
+
+    <h3>Monstruos</h3>
+
+    @if (encounter.isLoading()) {
+
+      <p class="empty-message">
+        Cargando enemigos...
+      </p>
+
+    } @else if (encounter.error()) {
+
+      <p class="enemy-error" role="alert">
+        No se pudo cargar el encuentro.
+      </p>
+
+    } @else if (encounter.hasValue()) {
+
+      @let currentEncounter = encounter.value();
+
+      @for (
+        monster of currentEncounter.monsters;
+        track monster.publicId
+      ) {
+
+        <article class="enemy-card">
+
+          <div class="enemy-info">
+
+            <h4>{{ monster.name }}</h4>
+
+            <p>
+              Desafío: {{ monster.challengeRating }}
+            </p>
+
+            <p>
+              HP: {{ monster.currentHp }} / {{ monster.maxHp }}
+            </p>
+
+          </div>
+
+          @if (canEdit()) {
+
+            <div class="enemy-actions">
+
+              <input
+                #hpAmount
+                class="hp-amount"
+                type="number"
+                min="1"
+                value="1"
+                aria-label="Cantidad de puntos de golpe"
+                [disabled]="isSaving()"
+              />
+
+              <button
+                type="button"
+                [disabled]="isSaving() || monster.currentHp <= 0"
+                (click)="damage(monster, hpAmount.valueAsNumber)"
+              >
+                Daño
+              </button>
+
+              <button
+                type="button"
+                [disabled]="isSaving() || monster.currentHp >= monster.maxHp"
+                (click)="heal(monster, hpAmount.valueAsNumber)"
+              >
+                Curar
+              </button>
+
+              <button
+                type="button"
+                class="remove-button"
+                [disabled]="isSaving()"
+                (click)="removeMonster(monster)"
+              >
+                Quitar
+              </button>
+
+            </div>
+
+          }
+
+        </article>
+
+      } @empty {
+
+        <p class="empty-message">
+          Todavía no hay enemigos en este encuentro.
+        </p>
+
+      }
+
+    }
+
+  </section>
+
+</section>

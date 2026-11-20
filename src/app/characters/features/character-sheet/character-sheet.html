@@ -1,0 +1,446 @@
+
+<section class="character-sheet">
+
+  <!-- Header -->
+
+  <header class="sheet-header">
+    <div>
+      <a [routerLink]="commands.characters" class="back-link">
+        Volver a personajes
+      </a>
+
+      <h1>Ficha de personaje</h1>
+      <p>Consultá los datos de tu aventurero.</p>
+    </div>
+
+    @if (campaignName(); as name) {
+      <span class="campaign-label">
+        Campana: {{ name }}
+      </span>
+    }
+  </header>
+
+  @if (!campaignId()) {
+
+    <div class="sheet-message">
+      <p>Seleccioná una campaña para continuar.</p>
+
+      <a [routerLink]="commands.campaigns" class="action-link">
+        Ver campañas
+      </a>
+    </div>
+
+  } @else if (!characterId()) {
+
+    <div class="sheet-message">
+      Seleccioná un personaje para consultar su ficha.
+    </div>
+
+  } @else if (isLoading()) {
+
+    <div class="sheet-message" role="status">
+      Cargando ficha de personaje...
+    </div>
+
+  } @else if (errorMessage()) {
+
+    <div class="sheet-message" role="alert">
+      <p>{{ errorMessage() }}</p>
+
+      <button type="button" (click)="retry()">
+        Reintentar
+      </button>
+    </div>
+
+  } @else if (character(); as currentCharacter) {
+
+    <!-- Character Summary -->
+
+    <article class="character-summary">
+
+      <div class="character-portrait">
+        {{ currentCharacter.name.charAt(0).toUpperCase() }}
+      </div>
+
+      <div class="character-identity">
+
+        <h2>{{ currentCharacter.name }}</h2>
+
+        <p>
+          {{ currentCharacter.characterClass }}
+          - Nivel {{ currentCharacter.level }}
+        </p>
+
+        <span
+          class="character-status"
+          [class.dead]="currentCharacter.status === 'DEAD'"
+          [class.unconscious]="currentCharacter.status === 'UNCONSCIOUS'"
+        >
+          {{ getStatusLabel(currentCharacter.status) }}
+        </span>
+
+      </div>
+
+      <div class="summary-details">
+
+        <div>
+          <span>Raza</span>
+          <strong>{{ currentCharacter.race }}</strong>
+        </div>
+
+        <div>
+          <span>Clase</span>
+          <strong>{{ currentCharacter.characterClass }}</strong>
+        </div>
+
+        <div>
+          <span>Subclase</span>
+          <strong>{{ currentCharacter.subclass || '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Trasfondo</span>
+          <strong>{{ currentCharacter.background || '-' }}</strong>
+        </div>
+
+      </div>
+
+    </article>
+
+    <!-- Navigation Tabs -->
+
+    <nav class="sheet-tabs" aria-label="Secciones de personaje">
+
+      <button
+        type="button"
+        [class.active]="activeTab() === 'sheet'"
+        [attr.aria-pressed]="activeTab() === 'sheet'"
+        (click)="selectTab('sheet')"
+      >
+        Ficha
+      </button>
+
+      <button
+        type="button"
+        [class.active]="activeTab() === 'spells'"
+        [attr.aria-pressed]="activeTab() === 'spells'"
+        (click)="selectTab('spells')"
+      >
+        Hechizos
+      </button>
+
+      <button
+        type="button"
+        [class.active]="activeTab() === 'inventory'"
+        [attr.aria-pressed]="activeTab() === 'inventory'"
+        (click)="selectTab('inventory')"
+      >
+        Inventario
+      </button>
+
+    </nav>
+
+    <!-- Main Character Sheet -->
+
+    @if (activeTab() === 'sheet') {
+
+      <div class="sheet-grid">
+
+        <!-- Column 1: Attributes -->
+
+        <div class="sheet-column">
+
+          <section class="sheet-card">
+
+            <h2>Atributos</h2>
+
+            <div class="abilities-list">
+
+              @for (ability of abilities(); track ability.shortName) {
+
+                <div class="ability-item">
+
+                  <div class="ability-score">
+                    {{ ability.score }}
+                  </div>
+
+                  <div class="ability-info">
+
+                    <strong>{{ ability.name }}</strong>
+
+                    <span>
+                      Mod. {{ formatBonus(ability.modifier) }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              }
+
+            </div>
+
+          </section>
+
+        </div>
+
+        <!-- Column 2: Saving Throws and Skills -->
+
+        <div class="sheet-column">
+
+          <section class="sheet-card">
+
+            <h2>Tiradas de salvación</h2>
+
+            <div class="stat-list">
+
+              @for (
+                saving of savingThrows();
+                track saving.shortName
+              ) {
+
+                <div class="stat-row">
+
+                  <span class="stat-name">
+                    {{ saving.name }}
+                  </span>
+
+                  @if (saving.bonus !== null) {
+
+                    @if (saving.proficient) {
+                      <span class="skill-badge">
+                        Competente
+                      </span>
+                    }
+
+                    <strong>
+                      {{ formatBonus(saving.bonus) }}
+                    </strong>
+
+                  }
+
+                </div>
+
+              }
+
+            </div>
+
+          </section>
+
+          <section class="sheet-card">
+
+            <h2>Habilidades</h2>
+
+            <div class="stat-list">
+
+              @for (
+                skill of currentCharacter.skills ?? [];
+                track skill.publicId
+              ) {
+
+                <div class="stat-row">
+
+                  <span>{{ skill.name }}</span>
+
+                  @if (skill.proficiency > 0) {
+                    <span class="skill-badge">
+                      Competente
+                    </span>
+                  }
+
+                </div>
+
+              }
+
+            </div>
+
+          </section>
+
+        </div>
+
+        <!-- Column 3: Combat, Spells and Inventory -->
+
+        <div class="sheet-column">
+
+          <!-- Combat -->
+
+          <section class="sheet-card">
+
+            <h2>Combate</h2>
+
+            <div class="combat-stats">
+
+              <div class="combat-stat">
+
+                <span>Clase de armadura</span>
+
+                <!-- TODO: Calculate armor class from equipment. -->
+                <strong></strong>
+
+              </div>
+
+              <div class="combat-stat">
+
+                <span>Iniciativa</span>
+
+                <strong>
+                  {{ formatBonus(currentCharacter.dexterityMod) }}
+                </strong>
+
+              </div>
+
+              <div class="combat-stat">
+
+                <span>Velocidad</span>
+
+                @if (raceDetails(); as race) {
+                  <strong>{{ race.speed }} pies</strong>
+                }
+
+              </div>
+
+            </div>
+
+            <!-- Hit Points -->
+
+            <div class="health-box">
+
+              <div class="health-heading">
+
+                <span>Puntos de golpe</span>
+
+                <strong>
+                  {{ currentCharacter.currentHP }} /
+                  {{ currentCharacter.maxHP }}
+                </strong>
+
+              </div>
+
+              <div
+                class="health-bar"
+                role="progressbar"
+                aria-label="Puntos de golpe"
+                [attr.aria-valuemin]="0"
+                [attr.aria-valuemax]="currentCharacter.maxHP"
+                [attr.aria-valuenow]="currentCharacter.currentHP"
+              >
+                <div
+                  class="health-fill"
+                  [style.width.%]="healthPercentage()"
+                ></div>
+              </div>
+
+            </div>
+
+            <!-- Combat Information -->
+
+            <div class="combat-footer">
+
+              <div>
+
+                <span>Competencia</span>
+
+                <strong>
+                  {{ formatBonus(currentCharacter.proficiencyBonus) }}
+                </strong>
+
+              </div>
+
+              <div>
+
+                <span>Estado</span>
+
+                <strong>
+                  {{ getStatusLabel(currentCharacter.status) }}
+                </strong>
+
+              </div>
+
+            </div>
+
+          </section>
+
+          <!-- Spells Summary -->
+
+          <section class="sheet-card">
+
+            <h2>Hechizos</h2>
+
+            <p class="section-description">
+              Conjuros conocidos:
+              {{ (currentCharacter.knowSpells ?? []).length }}
+            </p>
+
+            <p class="section-description">
+              Conjuros preparados:
+              {{ preparedSpellsCount() }}
+            </p>
+
+            <button
+              type="button"
+              class="section-button"
+              (click)="selectTab('spells')"
+            >
+              Ver hechizos
+            </button>
+
+          </section>
+
+          <!-- Inventory Summary -->
+
+          <section class="sheet-card">
+
+            <h2>Inventario</h2>
+
+            <p class="section-description">
+              Oro: {{ currentCharacter.gold }} po
+            </p>
+
+            <p class="section-description">
+              Objetos: {{ inventorySummary().total }}
+              ({{ inventorySummary().equipped }} equipados)
+            </p>
+
+            <button
+              type="button"
+              class="section-button"
+              (click)="selectTab('inventory')"
+            >
+              Ver inventario
+            </button>
+
+          </section>
+
+        </div>
+
+      </div>
+
+    }
+
+    <!-- Spells Tab -->
+
+    @if (activeTab() === 'spells') {
+
+      <app-character-spells
+        [character]="currentCharacter"
+        [classIndex]="classDetails()?.index ?? null"
+        [canEdit]="canEdit()"
+        (updated)="onCharacterUpdated($event)"
+      />
+
+    }
+
+    <!-- Inventory Tab -->
+
+    @if (activeTab() === 'inventory') {
+
+      <app-character-inventory
+        [character]="currentCharacter"
+        [canEdit]="canEdit()"
+        (updated)="onCharacterUpdated($event)"
+      />
+
+    }
+  }
+
+</section>

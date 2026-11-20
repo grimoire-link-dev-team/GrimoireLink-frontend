@@ -1,0 +1,148 @@
+<section class="encounters-section">
+  <div class="encounters-header">
+    <div>
+      <h2>Encuentros</h2>
+      <p>Combates y desafíos preparados para esta campaña.</p>
+    </div>
+
+    @if (isDungeonMaster() && !showForm()) {
+      <button type="button" class="primary-button" (click)="openForm()">Nuevo encuentro</button>
+    }
+  </div>
+
+  @if (showForm()) {
+    <form class="encounter-form" [formRoot]="encounterForm">
+      <div class="form-row">
+        <div class="field">
+          <label for="encounterType">Tipo</label>
+          <select id="encounterType" [formField]="encounterForm.encounterType">
+            @for (option of typeOptions; track option[0]) {
+              <option [value]="option[0]">{{ option[1] }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="encounterDifficulty">Dificultad</label>
+          <select id="encounterDifficulty" [formField]="encounterForm.encounterDifficulty">
+            @for (option of difficultyOptions; track option[0]) {
+              <option [value]="option[0]">{{ option[1] }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="encounterDescription">Descripción</label>
+        <textarea
+          id="encounterDescription"
+          rows="3"
+          placeholder="Una emboscada de goblins en el camino al norte..."
+          [formField]="encounterForm.description"
+        ></textarea>
+        @if (encounterForm.description().touched() && encounterForm.description().invalid()) {
+          @for (error of encounterForm.description().errors(); track error.kind) {
+            <p class="field-error">{{ error.message }}</p>
+          }
+        }
+      </div>
+
+      @if (createError()) {
+        <p class="form-error" role="alert">{{ createError() }}</p>
+      }
+
+      <div class="form-actions">
+        <button
+          type="button"
+          class="secondary-button"
+          [disabled]="encounterForm().submitting()"
+          (click)="closeForm()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          class="primary-button"
+          [disabled]="encounterForm().submitting() || encounterForm().invalid()"
+        >
+          {{ encounterForm().submitting() ? 'Creando...' : 'Crear encuentro' }}
+        </button>
+      </div>
+    </form>
+  }
+
+  @if (isLoading()) {
+    <p class="encounters-message" role="status">Cargando encuentros...</p>
+  } @else if (loadError()) {
+    <div class="encounters-message encounters-error" role="alert">
+      <p>{{ loadError() }}</p>
+      <button type="button" class="secondary-button" (click)="loadEncounters()">
+        Reintentar
+      </button>
+    </div>
+  } @else if (visibleEncounters().length === 0) {
+    <p class="encounters-message">
+      {{
+        isDungeonMaster()
+          ? 'Todavía no creaste encuentros en esta campaña.'
+          : 'Todavía no hay encuentros disponibles.'
+      }}
+    </p>
+    } @else {
+    @if (statusError()) {
+      <p class="form-error" role="alert">{{ statusError() }}</p>
+    }
+
+    <ul class="encounters-list">
+      @for (encounter of visibleEncounters(); track encounter.publicId) {
+        <li class="encounter-card">
+          <div class="encounter-info">
+            <h3>{{ typeLabels[encounter.encounterType] ?? encounter.encounterType }}</h3>
+            <p>{{ encounter.description || 'Sin descripción' }}</p>
+            <span class="encounter-meta">
+              Dificultad:
+              {{ difficultyLabels[encounter.encounterDifficulty] ?? encounter.encounterDifficulty }}
+              · {{ encounter.monsters.length }} monstruos
+            </span>
+          </div>
+
+          <div class="encounter-actions">
+            @if (isDungeonMaster()) {
+              <select
+                #statusSelect
+                class="status-select"
+                aria-label="Estado del encuentro"
+                [disabled]="updatingId() === encounter.publicId"
+                (change)="changeStatus(encounter.publicId, statusSelect.value)"
+              >
+                @for (option of statusOptions; track option[0]) {
+                  <option [value]="option[0]" [selected]="option[0] === encounter.encounterStatus">
+                    {{ option[1] }}
+                  </option>
+                }
+              </select>
+            } @else {
+              <span
+                class="encounter-status"
+                [class.active]="encounter.encounterStatus === 'ACTIVE'"
+              >
+                {{ statusLabels[encounter.encounterStatus] ?? encounter.encounterStatus }}
+              </span>
+            }        
+                <a
+                  class="secondary-button"
+                  [routerLink]="commands.encounters"
+                  [queryParams]="{
+                    encounterId: encounter.publicId,
+                    campaignId: campaignId()
+                  }"
+                >
+                  Abrir
+                </a>
+
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

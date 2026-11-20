@@ -1,0 +1,361 @@
+<section class="journal-page">
+
+  <!-- Header -->
+
+  <header class="journal-header">
+
+    <div>
+      <h1>Diario de campaña</h1>
+
+      @if (campaignContext.selectedCampaign(); as campaign) {
+        <p>{{ campaign.name }}</p>
+      } @else {
+        <p>La historia de tus aventuras.</p>
+      }
+    </div>
+
+    <!-- Campaign Selector -->
+
+    <div class="journal-field">
+
+      <label for="journalCampaign">
+        Seleccionar campaña
+      </label>
+
+      <select
+        id="journalCampaign"
+        [value]="campaignContext.selectedId() ?? ''"
+        (change)="onCampaignChange($event)"
+        [disabled]="
+          campaignContext.isLoading() ||
+          journalForm().submitting()
+        "
+      >
+
+        <option value="">
+          Seleccionar campaña
+        </option>
+
+        @for (
+          campaign of campaignContext.campaigns();
+          track campaign.publicId
+        ) {
+
+          <option [value]="campaign.publicId">
+            {{ campaign.name }}
+          </option>
+
+        }
+
+      </select>
+
+    </div>
+
+    @if (canEdit() && !showEditor()) {
+
+      <button
+        type="button"
+        class="primary-button"
+        (click)="openCreate()"
+      >
+        Nueva entrada
+      </button>
+
+    }
+
+  </header>
+
+  <!-- Campaign Selection -->
+
+  @if (!campaignContext.selectedId()) {
+
+    <div class="journal-message">
+
+      <h2>Seleccioná una campaña</h2>
+
+      <p>
+        Elegí una campaña para consultar su diario.
+      </p>
+
+      <a
+        [routerLink]="commands.campaigns"
+        class="secondary-button"
+      >
+        Ver campañas
+      </a>
+
+    </div>
+
+  } @else if (campaignContext.isRoleLoading()) {
+
+    <p class="journal-message" role="status">
+      Comprobando acceso...
+    </p>
+
+  } @else if (!campaignContext.selectedRole()) {
+
+    <div class="journal-message" role="alert">
+      No se pudo verificar el acceso a esta campaña.
+    </div>
+
+  } @else {
+
+    <!-- Create / Edit Form -->
+
+    @if (showEditor() && canEdit()) {
+
+      <section class="journal-editor">
+
+        <h2>
+          {{ editingId() ? 'Editar entrada' : 'Nueva entrada' }}
+        </h2>
+
+        <form
+          [formRoot]="journalForm"
+          class="journal-form"
+        >
+
+          <div class="journal-field">
+
+            <label for="journalType">
+              Tipo de acontecimiento
+            </label>
+
+            <select
+              id="journalType"
+              [formField]="journalForm.journalEntryType"
+            >
+
+              @for (
+                option of entryTypeOptions;
+                track option.value
+              ) {
+
+                <option [value]="option.value">
+                  {{ option.label }}
+                </option>
+
+              }
+
+            </select>
+
+          </div>
+
+          <div class="journal-field">
+
+            <label for="journalDescription">
+              Descripción
+            </label>
+
+            <textarea
+              id="journalDescription"
+              rows="7"
+              placeholder="Escribí lo que sucedió durante la aventura..."
+              [formField]="journalForm.description"
+            ></textarea>
+
+            @if (
+              journalForm.description().touched() &&
+              journalForm.description().invalid()
+            ) {
+
+              @for (
+                error of journalForm.description().errors();
+                track error.kind
+              ) {
+
+                <p class="field-error">
+                  {{ error.message }}
+                </p>
+
+              }
+
+            }
+
+          </div>
+
+          @if (saveError()) {
+
+            <p class="journal-error" role="alert">
+              {{ saveError() }}
+            </p>
+
+          }
+
+          <div class="journal-actions">
+
+            <button
+              type="submit"
+              class="primary-button"
+              [disabled]="journalForm().submitting()"
+            >
+              {{
+                journalForm().submitting()
+                  ? 'Guardando...'
+                  : editingId()
+                    ? 'Guardar cambios'
+                    : 'Publicar entrada'
+              }}
+            </button>
+
+            <button
+              type="button"
+              class="secondary-button"
+              [disabled]="journalForm().submitting()"
+              (click)="closeEditor()"
+            >
+              Cancelar
+            </button>
+
+          </div>
+
+        </form>
+
+      </section>
+
+    }
+
+    <!-- Journal Timeline -->
+
+    <section class="journal-timeline">
+
+      <div class="timeline-header">
+
+        <h2>Historia de la aventura</h2>
+
+        <button
+          type="button"
+          class="secondary-button"
+          [disabled]="isLoading()"
+          (click)="reload()"
+        >
+          Actualizar
+        </button>
+
+      </div>
+
+      @if (loadError()) {
+
+        <div class="journal-message" role="alert">
+
+          <p>{{ loadError() }}</p>
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="reload()"
+          >
+            Reintentar
+          </button>
+
+        </div>
+
+      } @else if (isLoading()) {
+
+        <p class="journal-message" role="status">
+          Cargando acontecimientos...
+        </p>
+
+      } @else {
+
+        @if (deleteError()) {
+
+          <p class="journal-error" role="alert">
+            {{ deleteError() }}
+          </p>
+
+        }
+
+        @for (
+          entry of sortedEntries();
+          track entry.publicId
+        ) {
+
+          <article class="journal-entry">
+
+            <div class="entry-header">
+
+              <div class="entry-heading">
+
+                <span class="entry-type">
+                  {{ getTypeLabel(entry.journalEntryType) }}
+                </span>
+
+                <time class="entry-date">
+                  {{ entry.date | date:'dd/MM/yyyy HH:mm' }}
+                </time>
+
+              </div>
+
+              @if (canEdit()) {
+
+                <div class="entry-actions">
+
+                  <button
+                    type="button"
+                    class="secondary-button"
+                    [disabled]="isDeleting() !== null"
+                    (click)="openEdit(entry)"
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    type="button"
+                    class="delete-button"
+                    [disabled]="isDeleting() !== null"
+                    (click)="deleteEntry(entry)"
+                  >
+                    {{
+                      isDeleting() === entry.publicId
+                        ? 'Eliminando...'
+                        : 'Eliminar'
+                    }}
+                  </button>
+
+                </div>
+
+              }
+
+            </div>
+
+            <p class="entry-description">
+              {{ entry.description }}
+            </p>
+
+          </article>
+
+        } @empty {
+
+          <div class="journal-message">
+
+            <h3>Todavía no hay entradas</h3>
+
+            <p>
+              Los acontecimientos de esta campaña
+              aparecerán aquí.
+            </p>
+
+            @if (canEdit()) {
+
+              <button
+                type="button"
+                class="primary-button"
+                (click)="openCreate()"
+              >
+                Crear primera entrada
+              </button>
+
+            }
+
+          </div>
+
+        }
+
+      }
+
+    </section>
+
+  }
+
+</section>

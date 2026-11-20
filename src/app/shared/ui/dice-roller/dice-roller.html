@@ -1,0 +1,86 @@
+
+<section class="dice-roller">
+
+  <div class="dice-header">
+    <h2>Dados rápidos</h2>
+    <p>Seleccioná tus dados y hacé una tirada.</p>
+  </div>
+
+  <div class="dice-list">
+    @for (dice of diceTypes; track dice) {
+      <button
+        type="button"
+        class="dice-button"
+        [class.active]="selectedDice() === dice"
+        [attr.aria-pressed]="selectedDice() === dice"
+        (click)="selectDice(dice)"
+      >
+        d{{ dice }}
+      </button>
+    }
+  </div>
+
+  <div class="dice-options">
+
+    <div class="dice-field">
+      <label for="quantity">Cantidad</label>
+      <input
+        type="number"
+        id="quantity"
+        step="1"
+        [formField]="rollForm.quantity"
+      />
+    </div>
+
+    <div class="dice-field">
+      <label for="modifier">Modificador</label>
+      <input
+        type="number"
+        id="modifier"
+        step="1"
+        [formField]="rollForm.modifier"
+      />
+    </div>
+
+  </div>
+
+  @for (error of rollForm.quantity().errors(); track error.kind) {
+    <p class="dice-error" role="alert">{{ error.message }}</p>
+  }
+  @for (error of rollForm.modifier().errors(); track error.kind) {
+    <p class="dice-error" role="alert">{{ error.message }}</p>
+  }
+
+  <button
+    type="button"
+    class="roll-button"
+    [disabled]="rollForm().invalid()"
+    (click)="rollDice()"
+  >
+    Lanzar dados
+  </button>
+
+  @if (total() !== null) {
+    @let modifier = rolledModifier();
+
+    <div class="dice-result" aria-live="polite">
+
+      <span>Resultado total</span>
+      <strong>{{ total() }}</strong>
+
+      <p>
+        Dados:
+        @for (result of results(); track $index) {
+          {{ result }}{{ !$last ? ' + ' : '' }}
+        }
+
+        @if (modifier !== 0) {
+          {{ modifier > 0 ? '+' : '-' }}
+          {{ modifier < 0 ? -modifier : modifier }}
+        }
+      </p>
+
+    </div>
+  }
+
+</section>

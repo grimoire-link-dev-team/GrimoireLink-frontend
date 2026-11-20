@@ -1,0 +1,51 @@
+<div class="filters">
+  @for (type of itemTypes; track type.value) {
+    <button
+      type="button"
+      class="chip"
+      [class.on]="itemType() === type.value"
+      (click)="selectType(type.value)"
+    >
+      {{ type.label }}
+    </button>
+  }
+</div>
+
+<input
+  type="search"
+  placeholder="Buscar objeto..."
+  aria-label="Buscar objeto"
+  [formField]="searchForm.search"
+/>
+
+@if (catalog.isLoading()) {
+  <p class="muted">Cargando objetos...</p>
+} @else if (catalog.error()) {
+  <p class="error">No se pudo cargar la lista de objetos.</p>
+} @else {
+  @for (item of visible(); track item.index) {
+    <div class="row">
+      <span>{{ item.name }}</span>
+
+      @if (isOwned(item.index)) {
+        <span class="tag">Ya lo tiene</span>
+      } @else {
+        <button
+          type="button"
+          class="btn"
+          aria-label="Agregar objeto"
+          [disabled]="pendingIndex() === item.index"
+          (click)="pick(item.index, item.name)"
+        >
+          + Agregar
+        </button>
+      }
+    </div>
+  } @empty {
+    <p class="muted">No hay objetos con ese nombre.</p>
+  }
+
+  @if (hiddenResults()) {
+    <p class="muted">Y {{ hiddenResults() }} más. Refiná la búsqueda.</p>
+  }
+}

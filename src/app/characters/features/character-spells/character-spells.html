@@ -1,0 +1,112 @@
+@if (!isCaster()) {
+
+  <section class="card">
+    <h2>Hechizos del personaje</h2>
+    <p class="muted">La clase {{ character().characterClass }} no lanza conjuros en este nivel.</p>
+  </section>
+
+} @else {
+
+  <!-- Resumen -->
+
+  <div class="stats">
+    <div>
+      <span>Trucos</span>
+      <strong>{{ knownCantrips() }} / {{ cantripsAllowed() }}</strong>
+    </div>
+    <div>
+      <span>Conocidos</span>
+      <strong>
+        {{ knownLeveled() }}
+        @if (spellsAllowed()) { / {{ spellsAllowed() }} }
+      </strong>
+    </div>
+    <div>
+      <span>Preparados</span>
+      <strong>{{ preparedCount() }}</strong>
+    </div>
+    <div>
+      <span>Espacios</span>
+      <strong>
+        @for (slot of slotsByLevel(); track slot.level) {
+          <span class="slot">N{{ slot.level }}·{{ slot.count }}</span>
+        } @empty {
+          -
+        }
+      </strong>
+    </div>
+  </div>
+
+  @if (errorMessage()) {
+    <p class="error" role="alert">{{ errorMessage() }}</p>
+  }
+
+  <div class="layout" [class.single]="!canEdit()">
+
+    <!-- Conocidos -->
+
+    <section class="card">
+      <h2>Conjuros conocidos</h2>
+
+      @for (spell of knownSpells(); track spell.publicId) {
+        <div class="row">
+          <div>
+            <strong>{{ spell.name }}</strong>
+            <span class="muted">{{ levelLabel(spell.level) }}</span>
+          </div>
+
+          @if (canEdit()) {
+            <div class="actions">
+              @if (spell.level !== 0) {
+                <button
+                  type="button"
+                  class="btn"
+                  [class.on]="spell.prepared"
+                  [disabled]="pendingId() === spell.publicId"
+                  (click)="togglePrepared(spell)"
+                >
+                  {{ spell.prepared ? '✓ Preparado' : 'Preparar' }}
+                </button>
+              }
+
+              <button
+                type="button"
+                class="btn"
+                aria-label="Quitar hechizo"
+                [disabled]="pendingId() === spell.publicId"
+                (click)="removeSpell(spell)"
+              >
+                Quitar
+              </button>
+            </div>
+          } @else if (spell.prepared) {
+            <span class="tag">Preparado</span>
+          }
+        </div>
+      } @empty {
+        <p class="muted">Todavía no conoce ningún conjuro.</p>
+      }
+    </section>
+
+    <!-- Agregar -->
+
+    @if (canEdit()) {
+      <section class="card">
+        <h2>Agregar conjuro</h2>
+
+        <app-spell-picker
+          [spells]="classSpells.value() ?? []"
+          [loading]="classSpells.isLoading()"
+          [failed]="!!classSpells.error()"
+          [maxSpellLevel]="maxSpellLevel()"
+          [allowCantrips]="cantripsAllowed() > 0"
+          [cantripLimitReached]="cantripLimitReached()"
+          [spellLimitReached]="spellLimitReached()"
+          [excludedNames]="knownNames()"
+          [pendingIndex]="pendingId()"
+          (picked)="addSpell($event)"
+        />
+      </section>
+    }
+  </div>
+}

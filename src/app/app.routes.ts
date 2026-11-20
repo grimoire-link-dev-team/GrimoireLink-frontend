@@ -1,30 +1,59 @@
-import { Dashboard } from './pages/dashboard/dashboard';
-import { Home } from './pages/home/home';
-import { Login } from './pages/login/login';
-import { Register } from './pages/register/register';
-import { MainLayout } from './layout/main-layout/main-layout';
-import { Characters } from './pages/characters/characters';
-import { Monsters } from './pages/monsters/monsters';
-import { Encounters } from './pages/encounters/encounters';
-import { Notes } from './pages/notes/notes';
-import { Campaign } from './pages/campaign/campaign';
 import { Routes } from '@angular/router';
-
+import { ROUTE_SEGMENTS } from './app.route.segments';
+import { authRoutes } from './auth/auth.routes';
+import { authGuard } from './auth/data-access/auth-guard';
 
 export const routes: Routes = [
-  { path: 'login', component: Login },
-  { path: 'registro', component: Register },
+  ...authRoutes,
   {
     path: '',
-    component: MainLayout,
+    loadComponent: () => import('./layout/main-layout/main-layout').then(m => m.MainLayout),
     children: [
-      { path: '', component: Home, pathMatch: 'full' },
-      { path: 'inicio', component: Dashboard },
-      { path: 'personajes', component: Characters },
-      { path: 'campanias', component: Campaign},  
-      { path: 'diario', component: Notes },
-      { path: 'monstruos', component: Monsters },
-      { path: 'encuentros', component: Encounters },
+      {
+        // Public landing; Home shows the dashboard when the user is logged in.
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () => import('./home/features/home/home').then(m => m.Home),
+      },
+      {
+        path: '',
+        canActivate: [authGuard],
+        children: [
+          {
+            path: ROUTE_SEGMENTS.home,
+            loadComponent: () => import('./home/features/home/home').then(m => m.Home),
+          },
+          {
+            path: ROUTE_SEGMENTS.characters,
+            loadChildren: () => import('./characters/characters.routes').then(m => m.characterRoutes),
+          },
+          {
+            path: ROUTE_SEGMENTS.campaigns,
+            loadChildren: () => import('./campaigns/campaigns.routes').then(m => m.campaignRoutes),
+          },
+          {
+            path: ROUTE_SEGMENTS.journal,
+            loadComponent: () =>
+              import('./journal/features/journal-page/journal-page').then(m => m.JournalPage),
+          },
+          {
+            path: ROUTE_SEGMENTS.monsters,
+            loadComponent: () =>
+              import('./monsters/features/bestiary/monsters').then(m => m.Monsters),
+          },
+          {
+            path: ROUTE_SEGMENTS.dice,
+            loadComponent: () => import('./shared/ui/dice-roller/dice-roller').then(m => m.DiceRoller),
+          },
+          {
+            path: ROUTE_SEGMENTS.encounters,
+            loadComponent: () =>
+              import('./encounters/features/encounter-detail/encounter-detail').then(
+                m => m.EncounterDetail,
+              ),
+          },
+        ],
+      },
     ],
   },
   { path: '**', redirectTo: '' },

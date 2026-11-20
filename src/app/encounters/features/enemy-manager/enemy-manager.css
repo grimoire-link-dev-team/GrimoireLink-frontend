@@ -1,0 +1,181 @@
+:host {
+  display: block;
+}
+
+.enemy-manager {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.enemy-header h2 {
+  margin: 0 0 var(--space-2);
+  color: var(--color-text);
+  font-size: 20px;
+}
+
+.enemy-header p,
+.enemy-info p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.enemy-search,
+.encounter-enemies {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.enemy-search label {
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.enemy-search input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 12px;
+}
+
+.monster-results {
+  display: grid;
+  gap: 4px;
+  max-height: 210px;
+  overflow-y: auto;
+}
+
+.monster-option {
+  padding: 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.monster-option:hover,
+.monster-option.selected {
+  background: var(--color-active);
+}
+
+.selected-monster {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 12px;
+}
+
+.primary-button {
+  padding: 10px 14px;
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  color: var(--color-primary-text);
+  cursor: pointer;
+}
+
+.encounter-enemies h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.enemy-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.enemy-info {
+  display: grid;
+  gap: 5px;
+}
+
+.enemy-info h4 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 14px;
+}
+
+.enemy-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.hp-amount {
+  width: 64px;
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 12px;
+}
+
+.enemy-actions button {
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.enemy-actions button:hover:not(:disabled) {
+  background: var(--color-hover);
+}
+
+.enemy-actions button:disabled,
+.primary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.enemy-actions .remove-button,
+.enemy-error {
+  color: #b91c1c;
+}
+
+.enemy-error {
+  margin: 0;
+  font-size: 12px;
+}
+
+.empty-message {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .enemy-search,
+  .encounter-enemies {
+    padding: var(--space-3);
+  }
+
+  .enemy-card,
+  .selected-monster {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

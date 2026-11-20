@@ -1,0 +1,182 @@
+<section class="character-manager">
+
+  <header class="party-header">
+    <h2>Personajes del encuentro</h2>
+
+    @if (canEdit()) {
+      <p>Sumá a los personajes de tu campaña y llevá sus puntos de golpe.</p>
+    }
+  </header>
+
+  <!-- DM: characters that can join -->
+
+  @if (canEdit()) {
+
+    <div class="party-candidates">
+
+      <h3>Agregar personaje</h3>
+
+      @if (campaignCharacters.isLoading()) {
+
+        <p class="empty-message">Cargando personajes de la campaña...</p>
+
+      } @else if (campaignCharacters.error()) {
+
+        <p class="party-error">No se pudieron cargar los personajes de la campaña.</p>
+
+      } @else {
+
+        @for (character of candidates(); track character.publicId) {
+
+          <div class="candidate">
+            <span>
+              <strong>{{ character.name }}</strong>
+              · {{ character.race }} {{ character.characterClass }} · Nivel {{ character.level }}
+              <small>de {{ character.ownerName }}</small>
+            </span>
+
+            <button
+              type="button"
+              class="primary-button"
+              [disabled]="isSaving() || !encounter.hasValue()"
+              (click)="addCharacter(character.publicId)"
+            >
+              Agregar
+            </button>
+          </div>
+
+        } @empty {
+
+          <p class="empty-message">No hay más personajes disponibles para agregar.</p>
+
+        }
+
+      }
+
+    </div>
+
+  }
+
+  @if (errorMessage()) {
+    <p class="party-error" role="alert">{{ errorMessage() }}</p>
+  }
+
+  <!-- Characters in the encounter -->
+
+  <section class="party-list">
+
+    <h3>Grupo</h3>
+
+    @if (encounter.isLoading()) {
+
+      <p class="empty-message">Cargando personajes...</p>
+
+    } @else if (encounter.error()) {
+
+      <p class="party-error" role="alert">No se pudo cargar el encuentro.</p>
+
+    } @else if (encounter.hasValue()) {
+
+      @for (character of encounter.value().characters; track character.publicId) {
+
+        <article class="party-card" [class.down]="character.status !== 'ALIVE'">
+
+          <div class="party-info">
+
+            <div class="party-title">
+              <h4>{{ character.name }}</h4>
+
+              <span
+                class="character-status"
+                [class.alive]="character.status === 'ALIVE'"
+                [class.unconscious]="character.status === 'UNCONSCIOUS'"
+                [class.dead]="character.status === 'DEAD'"
+              >
+                {{ getStatusLabel(character.status) }}
+              </span>
+            </div>
+
+            <p>{{ character.raceName }} · {{ character.className }} · Nivel {{ character.level }}</p>
+
+            <div class="hp">
+              <div class="hp-bar">
+                <div
+                  class="hp-fill"
+                  [class.hp-high]="getHpLevel(character) === 'high'"
+                  [class.hp-mid]="getHpLevel(character) === 'mid'"
+                  [class.hp-low]="getHpLevel(character) === 'low'"
+                  [style.width.%]="getHpPercent(character)"
+                ></div>
+              </div>
+              <span class="hp-text">{{ character.currentHp }} / {{ character.maxHp }} PV</span>
+            </div>
+
+          </div>
+
+          @if (canEdit()) {
+
+            <div class="party-actions">
+
+              <input
+                #hpAmount
+                class="hp-amount"
+                type="number"
+                min="1"
+                value="1"
+                aria-label="Cantidad de puntos de golpe"
+                [disabled]="isSaving() || character.status === 'DEAD'"
+              />
+
+              <button
+                type="button"
+                [disabled]="isSaving() || character.status === 'DEAD' || character.currentHp <= 0"
+                (click)="damage(character, hpAmount.valueAsNumber)"
+              >
+                Daño
+              </button>
+
+              <button
+                type="button"
+                [disabled]="isSaving() || character.status === 'DEAD' || character.currentHp >= character.maxHp"
+                (click)="heal(character, hpAmount.valueAsNumber)"
+              >
+                Curar
+              </button>
+
+              @if (character.status === 'UNCONSCIOUS') {
+                <button
+                  type="button"
+                  class="remove-button"
+                  [disabled]="isSaving()"
+                  (click)="markAsDead(character)"
+                >
+                  Marcar como muerto
+                </button>
+              }
+
+              <button
+                type="button"
+                class="remove-button"
+                [disabled]="isSaving()"
+                (click)="removeCharacter(character)"
+              >
+                Quitar
+              </button>
+
+            </div>
+
+          }
+
+        </article>
+
+      } @empty {
+
+        <p class="empty-message">Todavía no hay personajes en este encuentro.</p>
+
+      }
+
+    }
+
+  </section>
+
+</section>

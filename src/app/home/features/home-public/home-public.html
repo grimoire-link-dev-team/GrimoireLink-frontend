@@ -1,0 +1,316 @@
+<section class="home-card" aria-labelledby="home-title">
+  <h1 id="home-title" class="home-title">Bienvenido a GrimoireLink</h1>
+
+
+  <div class="home-hero">
+    <div>
+      <p class="kicker">Tu mesa. Tu historia.</p>
+      <p class="home-lead">
+        GrimoireLink es una app para organizar partidas de rol de Dungeons &amp; Dragons 5e.
+        Permite crear personajes, gestionar campañas y encuentros, y compartir un diario de
+        aventuras, con herramientas específicas para jugadores y Dungeon Master.
+      </p>
+      <p class="muted">
+        ¿Nunca jugaste? Abajo te contamos qué es D&amp;D y cómo se juega, con datos del manual
+        oficial.
+      </p>
+        <div class="home-actions">
+
+          @if (isLoggedIn()) {
+
+            <a class="primary-button" [routerLink]="commands.campaigns">
+              Mis campañas
+            </a>
+
+            <a class="outline-button" [routerLink]="commands.characters">
+              Mis personajes
+            </a>
+
+          } @else {
+
+            <a class="primary-button" [routerLink]="commands.register">
+              Crear cuenta
+            </a>
+
+            <a class="outline-button" [routerLink]="commands.login">
+              Iniciar sesión
+            </a>
+
+          }
+
+        </div>
+
+    </div>
+
+      <div class="home-illustration">
+      <img
+        src="/Purple_d20.png"
+        alt="D20 morado"
+        class="d20-image"/>
+      </div>
+      </div>
+
+  <section class="home-section" aria-labelledby="what-title">
+    <div class="section-head">
+      <h2 id="what-title" class="section-title">¿Qué es Dungeons &amp; Dragons?</h2>
+    </div>
+    <p class="intro">
+      Es un juego de rol de mesa: cada jugador interpreta a un héroe y el Dungeon Master (DM)
+      narra el mundo, interpreta a sus habitantes y arbitra las reglas. No hay tablero ni
+      ganadores: el grupo construye una historia en conjunto y los dados deciden si cada acción
+      sale bien o mal. Una partida gira alrededor de tres pilares:
+    </p>
+    <div class="grid">
+      @for (pillar of pillars; track pillar.title) {
+        <article class="card">
+          <h3>{{ pillar.title }}</h3>
+          <p>{{ pillar.description }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="home-section" aria-labelledby="rules-title">
+    <div class="section-head">
+      <h2 id="rules-title" class="section-title">Las reglas en pocas palabras</h2>
+      <span class="source"></span>
+    </div>
+    @if (rules().data; as list) {
+      <div class="grid grid-2">
+        @for (rule of list; track rule.index) {
+          <article class="card">
+            <h3>{{ rule.name }}</h3>
+            <p>{{ ruleBlurb(rule.index) }}</p>
+            <ul class="chips small">
+              @for (sub of uniqueSections(rule); track sub.index) {
+                <li>{{ sub.name }}</li>
+              }
+            </ul>
+          </article>
+        }
+      </div>
+    } @else if (rules().error) {
+      <p class="placeholder">No se pudieron cargar las reglas.</p>
+    } @else {
+      <p class="placeholder">Abriendo el manual…</p>
+    }
+  </section>
+
+  <section class="home-section" aria-labelledby="abilities-title">
+    <div class="section-head">
+      <h2 id="abilities-title" class="section-title">Las seis características</h2>
+      <span class="source"></span>
+    </div>
+    <p class="intro">
+      Todo personaje se define con seis puntuaciones. Cada una agrupa habilidades: cuando
+      intentás algo, el DM te pide una prueba de la habilidad que corresponda.
+    </p>
+    @if (abilities().data; as list) {
+      <div class="grid grid-3">
+        @for (ability of list; track ability.index) {
+          <article class="card ability">
+            <span class="ability-abbr" aria-hidden="true">{{ abilityAbbr(ability.index) }}</span>
+            <div>
+              <h3>{{ ability.full_name }}</h3>
+              <p>{{ abilityText(ability.index) }}</p>
+              @if (ability.skills.length) {
+                <ul class="chips small">
+                  @for (skill of ability.skills; track skill.index) {
+                    <li>{{ skill.name }}</li>
+                  }
+                </ul>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    } @else if (abilities().error) {
+      <p class="placeholder">No se pudieron cargar las características.</p>
+    } @else {
+      <p class="placeholder">Tirando 4d6…</p>
+    }
+  </section>
+
+  <!--  carrousel  con raza y clasess -->
+  <section class="home-section" aria-labelledby="choose-title">
+    <div class="section-head">
+      <h2 id="choose-title" class="section-title">Elegí quién vas a ser</h2>
+      <span class="source"></span>
+    </div>
+
+    <div class="carousel-bar">
+      <div class="tabs" role="tablist" aria-label="Razas o clases">
+        <button
+          type="button"
+          role="tab"
+          class="tab"
+          [class.active]="slide() === 'races'"
+          [attr.aria-selected]="slide() === 'races'"
+          (click)="showSlide('races', track)"
+        >
+          Razas <span class="count">{{ races().data?.length ?? '' }}</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="tab"
+          [class.active]="slide() === 'classes'"
+          [attr.aria-selected]="slide() === 'classes'"
+          (click)="showSlide('classes', track)"
+        >
+          Clases <span class="count">{{ classes().data?.length ?? '' }}</span>
+        </button>
+      </div>
+      <div class="arrows">
+        <button type="button" class="arrow" aria-label="Anterior" (click)="scroll(track, -1)">‹</button>
+        <button type="button" class="arrow" aria-label="Siguiente" (click)="scroll(track, 1)">›</button>
+      </div>
+    </div>
+
+    <p class="intro">
+      @if (slide() === 'races') {
+        La raza define de dónde viene tu personaje: su tamaño, cuánto se mueve por turno y qué
+        características mejora.
+      } @else {
+        La clase es su profesión. El dado de golpe marca cuánta vida gana por nivel y las
+        salvaciones, contra qué peligros resiste mejor.
+      }
+    </p>
+
+    <div class="carousel" #track role="tabpanel" tabindex="0">
+      @if (slide() === 'races') {
+        @if (races().data; as list) {
+          @for (race of list; track race.index) {
+            <article class="card slide">
+              <h3>{{ race.name }}</h3>
+              <dl class="facts">
+                <div><dt>Tamaño</dt><dd>{{ race.size }}</dd></div>
+                <div><dt>Velocidad</dt><dd>{{ feetToMeters(race.speed) }}</dd></div>
+                <div><dt>Bonificador</dt><dd>{{ raceBonuses(race) }}</dd></div>
+              </dl>
+            </article>
+          }
+        } @else if (races().error) {
+          <p class="placeholder">No se pudieron cargar las razas.</p>
+        } @else {
+          <p class="placeholder">Reuniendo a los pueblos…</p>
+        }
+      } @else {
+        @if (classes().data; as list) {
+          @for (cls of list; track cls.index) {
+            <article class="card slide">
+              <div class="class-top">
+                <h3>{{ cls.name }}</h3>
+                <span class="die" title="Dado de golpe">d{{ cls.hit_die }}</span>
+              </div>
+              <dl class="facts">
+                <div><dt>Salvaciones</dt><dd>{{ savingThrows(cls) }}</dd></div>
+              </dl>
+            </article>
+          }
+        } @else if (classes().error) {
+          <p class="placeholder">No se pudieron cargar las clases.</p>
+        } @else {
+          <p class="placeholder">Llamando al gremio…</p>
+        }
+      }
+    </div>
+  </section>
+
+  <!-- Carrouselito con conjuros y bestiass -->
+  <section class="home-section" aria-labelledby="srd-title">
+    <div class="section-head">
+      <h2 id="srd-title" class="section-title">Bestiario y conjuros</h2>
+      <span class="source"></span>
+    </div>
+    <p class="intro">
+      El manual incluye
+      <strong>{{ monsterCount() ?? '…' }} monstruos</strong> y
+      <strong>{{ spellCount() ?? '…' }} conjuros</strong>. Acá van dos al azar:
+    </p>
+
+    <div class="showcase">
+      <article class="card" aria-live="polite">
+        <p class="kicker">Monstruo al azar</p>
+        @if (monster().data; as m) {
+          <div class="monster">
+            @if (imageUrl(m); as src) {
+              <img class="monster-img" [src]="src" [alt]="m.name" loading="lazy" />
+            } @else {
+              <div class="monster-img empty" aria-hidden="true">?</div>
+            }
+            <div>
+              <h3 class="monster-name">{{ m.name }}</h3>
+              <p class="monster-meta">{{ m.size }} · {{ m.type }}</p>
+              <dl class="stats">
+                <div><dt>CA</dt><dd>{{ m.armor_class[0]?.value }}</dd></div>
+                <div><dt>PG</dt><dd>{{ m.hit_points }}</dd></div>
+                <div><dt>VD</dt><dd>{{ m.challenge_rating }}</dd></div>
+              </dl>
+              <button type="button" class="link-btn" (click)="loadMonster()">Invocar otro</button>
+            </div>
+          </div>
+        } @else if (monster().error) {
+          <p class="placeholder">No se pudo consultar el bestiario.</p>
+          <button type="button" class="link-btn" (click)="loadMonster()">Reintentar</button>
+        } @else {
+          <p class="placeholder">Invocando criatura…</p>
+        }
+      </article>
+
+      <article class="card" aria-live="polite">
+        <p class="kicker">Conjuro al azar</p>
+        @if (spell().data; as s) {
+          <h3 class="monster-name">{{ s.name }}</h3>
+          <p class="monster-meta">{{ spellLevel(s.level) }} · {{ s.school.name }}</p>
+          <p class="spell-desc">{{ s.desc[0] }}</p>
+          <button type="button" class="link-btn" (click)="loadSpell()">Lanzar otro</button>
+        } @else if (spell().error) {
+          <p class="placeholder">No se pudo abrir el libro de conjuros.</p>
+          <button type="button" class="link-btn" (click)="loadSpell()">Reintentar</button>
+        } @else {
+          <p class="placeholder">Preparando conjuro…</p>
+        }
+      </article>
+    </div>
+  </section>
+
+  <!--El footer y el como se juega-->
+  <section class="cta" aria-labelledby="cta-title">
+    <div class="cta-top">
+      <div>
+        <h2 id="cta-title">¿Listo para tirar iniciativa?</h2>
+        <p>Así se juega con GrimoireLink:</p>
+      </div>
+      @if (isLoggedIn()) {
+
+        <a class="primary-button" [routerLink]="commands.campaigns">
+          Ver mis campañas
+        </a>
+
+      } @else {
+
+        <a class="primary-button" [routerLink]="commands.register">
+          Crear cuenta
+        </a>
+
+      }
+    </div>
+    <ol class="steps">
+      @for (step of steps; track step.title; let i = $index) {
+        <li class="step">
+          <span class="step-number" aria-hidden="true">{{ i + 1 }}</span>
+          <div>
+            <h3>{{ step.title }}</h3>
+            <p>{{ step.description }}</p>
+          </div>
+        </li>
+      }
+    </ol>
+  </section>
+
+  <p class="home-footer">
+    Datos de reglas, razas, clases, monstruos y conjuros del SRD 5.1 (2014) vía dnd5eapi.co.
+    Un espacio compartido para el grupo. Un espacio privado para quien dirige la aventura.
+  </p>
+</section>
