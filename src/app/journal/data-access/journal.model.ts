@@ -3,15 +3,15 @@ export const JOURNAL_ENTRY_OPTIONS = [
   { value: 'BOSS_FIGHT', label: 'Combate contra jefe' },
   { value: 'NARRATIVE', label: 'Narrativa' },
   { value: 'STORY_MILESTONE', label: 'Hito de historia' },
-  { value: 'REVELATION', label: 'Revelacion' },
-  { value: 'NPC_INTERACTION', label: 'Interaccion con NPC' },
+  { value: 'REVELATION', label: 'Revelación' },
+  { value: 'NPC_INTERACTION', label: 'Interacción con NPC' },
   { value: 'PLAYER_MOMENT', label: 'Momento del jugador' },
   { value: 'LOCATION_DISCOVERY', label: 'Descubrimiento' },
   { value: 'TRAVEL', label: 'Viaje' },
   { value: 'LOOT', label: 'Botin' },
   { value: 'LEVEL_UP', label: 'Subida de nivel' },
-  { value: 'SESSION_START', label: 'Inicio de sesion' },
-  { value: 'SESSION_END', label: 'Fin de sesion' },
+  { value: 'SESSION_START', label: 'Inicio de sesión' },
+  { value: 'SESSION_END', label: 'Fin de sesión' },
   { value: 'DM_NOTE', label: 'Nota del DM' }
 ] as const;
 

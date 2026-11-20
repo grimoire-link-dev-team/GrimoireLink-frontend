@@ -19,7 +19,7 @@
     <div class="journal-field">
 
       <label for="journalCampaign">
-        Seleccionar campana
+        Seleccionar campaña
       </label>
 
       <select
@@ -33,7 +33,7 @@
       >
 
         <option value="">
-          Seleccionar campana
+          Seleccionar campaña
         </option>
 
         @for (
@@ -71,17 +71,17 @@
 
     <div class="journal-message">
 
-      <h2>Selecciona una campana</h2>
+      <h2>Seleccioná una campaña</h2>
 
       <p>
-        Elige una campana para consultar su diario.
+        Elegí una campaña para consultar su diario.
       </p>
 
       <a
         [routerLink]="commands.campaigns"
         class="secondary-button"
       >
-        Ver campanas
+        Ver campañas
       </a>
 
     </div>
@@ -95,7 +95,7 @@
   } @else if (!campaignContext.selectedRole()) {
 
     <div class="journal-message" role="alert">
-      No se pudo verificar el acceso a esta campana.
+      No se pudo verificar el acceso a esta campaña.
     </div>
 
   } @else {
@@ -144,13 +144,13 @@
           <div class="journal-field">
 
             <label for="journalDescription">
-              Descripcion
+              Descripción
             </label>
 
             <textarea
               id="journalDescription"
               rows="7"
-              placeholder="Escribe lo que sucedio durante la aventura..."
+              placeholder="Escribí lo que sucedió durante la aventura..."
               [formField]="journalForm.description"
             ></textarea>
 
@@ -329,11 +329,11 @@
 
           <div class="journal-message">
 
-            <h3>Todavia no hay entradas</h3>
+            <h3>Todavía no hay entradas</h3>
 
             <p>
-              Los acontecimientos de esta campana
-              apareceran aqui.
+              Los acontecimientos de esta campaña
+              aparecerán aquí.
             </p>
 
             @if (canEdit()) {

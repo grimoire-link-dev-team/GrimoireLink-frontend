@@ -11,12 +11,12 @@ export interface PickedItem {
   itemType: ItemType;
 }
 
-// Mas resultados que esto se piden refinar con la busqueda.
+// Mas resultados que esto se piden refinar con la búsqueda.
 const MAX_RESULTS = 40;
 
 const ITEM_TYPES: { value: ItemType; label: string }[] = [
   { value: 'EQUIPMENT', label: 'Equipo' },
-  { value: 'MAGIC_ITEM', label: 'Objeto magico' },
+  { value: 'MAGIC_ITEM', label: 'Objeto mágico' },
 ];
 
 // Buscador de objetos (dnd5eapi). No llama al backend: el padre decide que hacer al elegir.
@@ -30,7 +30,7 @@ export class ItemPicker {
 
   private readonly srdService = inject(SrdService);
 
-  // Indices que ya tiene o ya eligio.
+  // Indices que ya tiene o ya eligió.
   readonly ownedIndexes = input<string[]>([]);
   readonly pendingIndex = input<string | null>(null);
 

@@ -84,7 +84,7 @@
             <div class="field">
               <label for="race">Linaje *</label>
               <select id="race" [formField]="characterForm.raceIndex">
-                <option value="">Selecciona un linaje</option>
+                <option value="">Seleccioná un linaje</option>
                 @for (race of races(); track race.index) {
                   <option [value]="race.index">{{ race.name }}</option>
                 }
@@ -99,7 +99,7 @@
             <div class="field">
               <label for="class">Clase *</label>
               <select id="class" [formField]="characterForm.classIndex">
-                <option value="">Selecciona una clase</option>
+                <option value="">Seleccioná una clase</option>
                 @for (item of classes(); track item.index) {
                   <option [value]="item.index">{{ item.name }}</option>
                 }
@@ -114,7 +114,7 @@
             <div class="field">
               <label for="background">Trasfondo *</label>
               <select id="background" [formField]="characterForm.backgroundIndex">
-                <option value="">Selecciona un trasfondo</option>
+                <option value="">Seleccioná un trasfondo</option>
                 @for (item of backgrounds(); track item.index) {
                   <option [value]="item.index">{{ item.name }}</option>
                 }
@@ -155,18 +155,18 @@
         </section>
       }
 
-      <!-- Paso 2: Caracteristicas -->
+      <!-- Paso 2: Características -->
 
       @if (currentStep() === 2) {
         <section class="panel">
           <header class="panel-header">
-            <h2>Caracteristicas</h2>
+            <h2>Características</h2>
             <span>Paso 2 de 4</span>
           </header>
 
           <div class="method-row">
             <div class="field">
-              <label for="method">Metodo de puntuacion</label>
+              <label for="method">Método de puntuación</label>
               <select
                 id="method"
                 [value]="draftModel().method"
@@ -224,7 +224,7 @@
           <hr />
 
           @if (skillChoice(); as choice) {
-            <h3>Competencias de clase · Elige {{ choice.choose }}</h3>
+            <h3>Competencias de clase · Elegí {{ choice.choose }}</h3>
 
             <div class="skill-grid">
               @for (skill of skillOptions(); track skill.index) {
@@ -315,7 +315,7 @@
                   <button type="button" aria-label="Quitar objeto" (click)="removeDraftItem(item.itemIndex)">×</button>
                 </span>
               } @empty {
-                <p class="field-note">Todavia no elegiste objetos. Es opcional.</p>
+                <p class="field-note">Todavía no elegiste objetos. Es opcional.</p>
               }
             </div>
 
@@ -345,7 +345,7 @@
                     <button type="button" aria-label="Quitar hechizo" (click)="removeDraftSpell(spell.index)">×</button>
                   </span>
                 } @empty {
-                  <p class="field-note">Todavia no elegiste hechizos. Es opcional.</p>
+                  <p class="field-note">Todavía no elegiste hechizos. Es opcional.</p>
                 }
               </div>
 
@@ -432,7 +432,7 @@
         </section>
       }
 
-      <!-- Navegacion -->
+      <!-- Navegación -->
 
       <div class="wizard-actions">
         @if (currentStep() > 1) {
@@ -486,13 +486,13 @@
         <dl class="summary-stats">
           <dt>Nivel inicial</dt><dd>{{ draftModel().level }}</dd>
           <dt>Puntos de vida maximos</dt><dd>{{ maxHp() ?? '—' }}</dd>
-          <dt>Bonificacion de competencia</dt><dd>{{ formatBonus(proficiency()) }}</dd>
+          <dt>Bonificación de competencia</dt><dd>{{ formatBonus(proficiency()) }}</dd>
           <dt>Iniciativa</dt><dd>{{ formatBonus(initiative()) }}</dd>
           <dt>Velocidad</dt><dd>{{ speed() !== null ? speed() + ' m' : '—' }}</dd>
         </dl>
 
         <p class="field-note">
-          La armadura y los ataques apareceran cuando elijas tu equipo.
+          La armadura y los ataques aparecerán cuando elijas tu equipo.
         </p>
       </section>
 
@@ -518,7 +518,7 @@
         }
 
         @if (!stepValid()[1] || !stepValid()[2]) {
-          <p class="field-note">Completa la identidad y las caracteristicas antes de crear el personaje.</p>
+          <p class="field-note">Completá la identidad y las características antes de crear el personaje.</p>
         }
       </section>
     </aside>

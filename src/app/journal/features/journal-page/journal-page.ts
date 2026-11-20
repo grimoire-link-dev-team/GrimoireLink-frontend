@@ -9,6 +9,7 @@ import { JournalService } from '../../data-access/journal-service';
 import {JournalEntry,JournalEntryType,JOURNAL_ENTRY_OPTIONS} from '../../data-access/journal.model';
 import { SidebarSummaryService } from '../../../layout/data-access/sidebar-summary-service';
 import { ROUTE_COMMANDS } from '../../../app.route.segments';
+import { ConfirmationService } from '../../../shared/data-access/confirmation-service';
 
 interface JournalFormModel {
   journalEntryType: JournalEntryType;
@@ -33,6 +34,7 @@ export class JournalPage {
   readonly campaignContext = inject(CampaignContextService);
   private readonly journalService = inject(JournalService);
   private readonly summaryService = inject(SidebarSummaryService);
+  private readonly confirmation = inject(ConfirmationService);
   readonly entries = signal<JournalEntry[]>([]);
   readonly isLoading = signal(false);
   readonly loadError = signal('');
@@ -62,15 +64,15 @@ export class JournalPage {
     (path) => {
 
       required(path.journalEntryType, {
-        message: 'Selecciona un tipo de entrada.'
+        message: 'Seleccioná un tipo de entrada.'
       });
 
       required(path.description, {
-        message: 'Escribe el acontecimiento.'
+        message: 'Escribí el acontecimiento.'
       });
 
       maxLength(path.description, 65535, {
-        message: 'La descripcion es demasiado larga.'
+        message: 'La descripción es demasiado larga.'
       });
 
     },
@@ -219,7 +221,7 @@ export class JournalPage {
 
     if (!description) {
       this.saveError.set(
-        'Escribe una descripcion para continuar.'
+        'Escribí una descripción para continuar.'
       );
       return;
     }
@@ -277,9 +279,12 @@ export class JournalPage {
       return;
     }
 
-    const confirmed = window.confirm(
-      'Seguro que deseas eliminar esta entrada del diario?'
-    );
+    const confirmed = await this.confirmation.confirm({
+      title: 'Eliminar entrada',
+      message: '¿Querés eliminar esta entrada del diario? No se puede deshacer.',
+      confirmLabel: 'Eliminar',
+      danger: true,
+    });
 
     if (!confirmed) {
       return;
@@ -335,16 +340,16 @@ export class JournalPage {
 
       switch (error.status) {
         case 400:
-          return 'Revisa los datos ingresados.';
+          return 'Revisá los datos ingresados.';
 
         case 401:
-          return 'Tu sesion ha expirado.';
+          return 'Tu sesión expiró.';
 
         case 403:
-          return 'No tienes permiso para realizar esta accion.';
+          return 'No tenés permiso para realizar esta acción.';
 
         case 404:
-          return 'No se encontro el recurso solicitado.';
+          return 'No se encontró el recurso solicitado.';
       }
 
       if (error.status === 0) {

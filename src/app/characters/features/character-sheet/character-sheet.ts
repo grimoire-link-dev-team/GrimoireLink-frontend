@@ -81,8 +81,8 @@ export class CharacterSheet {
     { initialValue: null }
   );
 
-  // Edita el dueno del personaje o el DM de la campana.
-  // El backend solo valida membresia, esto es control de interfaz.
+  // Edita el dueño del personaje o el DM de la campaña.
+  // El backend solo valida membresía, esto es control de interfaz.
   readonly canEdit = computed(() => {
     const character = this.character();
     const user = this.currentUser();
@@ -146,7 +146,7 @@ export class CharacterSheet {
         modifier: character.dexterityMod
       },
       {
-        name: 'Constitucion',
+        name: 'Constitución',
         shortName: 'con',
         score: character.constitution,
         modifier: character.constitutionMod
@@ -158,7 +158,7 @@ export class CharacterSheet {
         modifier: character.intelligenceMod
       },
       {
-        name: 'Sabiduria',
+        name: 'Sabiduría',
         shortName: 'wis',
         score: character.wisdom,
         modifier: character.wisdomMod
@@ -251,15 +251,15 @@ export class CharacterSheet {
           error: (error: HttpErrorResponse) => {
             if (error.status === 401) {
               this.errorMessage.set(
-                'Tu sesion ha expirado. Inicia sesion nuevamente.'
+                'Tu sesión expiró. Iniciá sesión nuevamente.'
               );
             } else if (error.status === 403) {
               this.errorMessage.set(
-                'No tienes permiso para consultar este personaje.'
+                'No tenés permiso para consultar este personaje.'
               );
             } else if (error.status === 404) {
               this.errorMessage.set(
-                'No se encontro el personaje.'
+                'No se encontró el personaje.'
               );
             } else {
               this.errorMessage.set(
