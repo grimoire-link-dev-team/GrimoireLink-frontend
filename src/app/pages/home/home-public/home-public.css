@@ -73,17 +73,12 @@
   color: var(--color-text);
 }
 
-.home-illustration {
-  justify-self: center;
+.d20-image {
+  display: block;
   width: 100%;
   max-width: 260px;
-  aspect-ratio: 1;
-  border: 2px dashed #c8962e;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: #c8962e;
-  font: 2rem var(--font-title);
+  height: auto;
+  object-fit: contain;
 }
 
 .home-section {
