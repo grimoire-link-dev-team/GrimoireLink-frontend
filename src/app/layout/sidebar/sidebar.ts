@@ -3,7 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CampaignContextService } from '../../campaigns/data-access/campaign-context-service';
 import { Campaign } from '../../campaigns/data-access/campaign.model';
 import { catchError, forkJoin, of } from 'rxjs';
-import { SidebarCharacter, SidebarJournalEntry, SidebarSummaryService } from '../main-layout/data-access/sidebar-summary-service';
+import { SidebarCharacter, SidebarJournalEntry, SidebarSummaryService } from '../data-access/sidebar-summary-service';
 import { DatePipe } from '@angular/common';
 
 type ViewMode='Dungeon Master'| 'Player';

@@ -7,7 +7,7 @@ import { firstValueFrom } from 'rxjs';
 import { CampaignContextService } from '../../../campaigns/data-access/campaign-context-service';
 import { JournalService } from '../../data-access/journal-service';
 import {JournalEntry,JournalEntryType,JOURNAL_ENTRY_OPTIONS} from '../../data-access/journal.model';
-import { SidebarSummaryService } from '../../../layout/main-layout/data-access/sidebar-summary-service';
+import { SidebarSummaryService } from '../../../layout/data-access/sidebar-summary-service';
 
 interface JournalFormModel {
   journalEntryType: JournalEntryType;

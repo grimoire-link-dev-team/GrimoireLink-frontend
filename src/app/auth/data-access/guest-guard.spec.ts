@@ -1,5 +1,7 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, provideRouter } from '@angular/router';
 import { guestGuard } from './guest-guard';
 
 describe('guestGuard', () => {
@@ -7,7 +9,9 @@ describe('guestGuard', () => {
     TestBed.runInInjectionContext(() => guestGuard(...guardParameters));
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+    });
   });
 
   it('should be created', () => {

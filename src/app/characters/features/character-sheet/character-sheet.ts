@@ -5,8 +5,8 @@ import { CampaignContextService } from '../../../campaigns/data-access/campaign-
 import { CharacterService } from '../../data-access/character-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { DndClass, DndRace } from '../../../core/models/dndlinks';
-import { Dndlinkservice } from '../../../core/services/dndlinkservice';
+import { DndClass, DndRace } from '../../../shared/data-access/srd.model';
+import { SrdService } from '../../../shared/data-access/srd-service';
 import { catchError, forkJoin, of, switchMap } from 'rxjs';
 import { UserService } from '../../../auth/data-access/user-service';
 import { CharacterSpells } from '../character-spells/character-spells';
@@ -39,7 +39,7 @@ export class CharacterSheet {
   readonly campaignContext = inject(CampaignContextService);
 
   private readonly characterService = inject(CharacterService);
-  private readonly dndService = inject(Dndlinkservice);
+  private readonly srdService = inject(SrdService);
   private readonly route = inject(ActivatedRoute);
 
   private readonly params = toSignal(
@@ -284,7 +284,7 @@ export class CharacterSheet {
         return;
       }
 
-      const raceRequest = this.dndService.getList('races').pipe(
+      const raceRequest = this.srdService.getList('races').pipe(
         switchMap(races => {
           const race = races.find(ref =>
             ref.name.toLowerCase() === raceName ||
@@ -292,13 +292,13 @@ export class CharacterSheet {
           );
 
           return race
-            ? this.dndService.getOne<DndRace>('races', race.index)
+            ? this.srdService.getOne<DndRace>('races', race.index)
             : of(null);
         }),
         catchError(() => of(null))
       );
 
-      const classRequest = this.dndService.getList('classes').pipe(
+      const classRequest = this.srdService.getList('classes').pipe(
         switchMap(classes => {
           const characterClass = classes.find(ref =>
             ref.name.toLowerCase() === className ||
@@ -306,7 +306,7 @@ export class CharacterSheet {
           );
 
           return characterClass
-            ? this.dndService.getOne<DndClass>(
+            ? this.srdService.getOne<DndClass>(
                 'classes',
                 characterClass.index
               )
