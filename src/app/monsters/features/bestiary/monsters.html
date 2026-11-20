@@ -133,7 +133,7 @@
 
               <img
                 [src]="imageUrl"
-                [alt]="'Ilustracion de ' + monster.name"
+                [alt]="'Ilustración de ' + monster.name"
                 loading="lazy"
                 (error)="onImageError()"
               />
@@ -141,7 +141,7 @@
             } @else {
 
               <div class="monster-image-placeholder">
-                <span>Sin ilustracion disponible</span>
+                <span>Sin ilustración disponible</span>
               </div>
 
             }
@@ -161,7 +161,7 @@
             </div>
 
             <div>
-              <span>Desafio</span>
+              <span>Desafío</span>
 
               <strong>
                 {{ monster.challengeRating }}
@@ -193,7 +193,7 @@
             </div>
 
             <div>
-              <span>Constitucion</span>
+              <span>Constitución</span>
 
               <strong>
                 {{ monster.constitution }}
@@ -205,7 +205,7 @@
         } @else {
 
           <div class="bestiary-empty">
-            Selecciona un monstruo para consultar sus datos.
+            Seleccioná un monstruo para consultar sus datos.
           </div>
 
         }

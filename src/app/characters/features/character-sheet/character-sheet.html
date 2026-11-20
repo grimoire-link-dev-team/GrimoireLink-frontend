@@ -10,7 +10,7 @@
       </a>
 
       <h1>Ficha de personaje</h1>
-      <p>Consulta los datos de tu aventurero.</p>
+      <p>Consultá los datos de tu aventurero.</p>
     </div>
 
     @if (campaignName(); as name) {
@@ -23,17 +23,17 @@
   @if (!campaignId()) {
 
     <div class="sheet-message">
-      <p>Selecciona una campana para continuar.</p>
+      <p>Seleccioná una campaña para continuar.</p>
 
       <a [routerLink]="commands.campaigns" class="action-link">
-        Ver campanas
+        Ver campañas
       </a>
     </div>
 
   } @else if (!characterId()) {
 
     <div class="sheet-message">
-      Selecciona un personaje para consultar su ficha.
+      Seleccioná un personaje para consultar su ficha.
     </div>
 
   } @else if (isLoading()) {
@@ -190,7 +190,7 @@
 
           <section class="sheet-card">
 
-            <h2>Tiradas de salvacion</h2>
+            <h2>Tiradas de salvación</h2>
 
             <div class="stat-list">
 

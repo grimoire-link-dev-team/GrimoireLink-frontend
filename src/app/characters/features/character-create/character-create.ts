@@ -65,12 +65,12 @@ const DRAFT_KEY = 'grimoirelink:character-draft';
 
 const STEPS: WizardStep[] = [
   { number: 1, label: 'Identidad' },
-  { number: 2, label: 'Caracteristicas' },
+  { number: 2, label: 'Características' },
   { number: 3, label: 'Equipo' },
   { number: 4, label: 'Revisar y crear' },
 ];
 
-// Nivel a partir del cual se muestra la eleccion de subclase.
+// Nivel a partir del cual se muestra la elección de subclase.
 const SUBCLASS_LEVEL = 3;
 
 @Component({
@@ -102,7 +102,7 @@ export class CharacterCreate {
   readonly equipmentTab = signal<EquipmentTab>('inventory');
   readonly submitError = signal('');
 
-  // Si el personaje se creo pero fallo algun objeto o hechizo, queda el id para ir a la ficha.
+  // Si el personaje se creó pero falló algún objeto o hechizo, queda el id para ir a la ficha.
   readonly createdCharacterId = signal<string | null>(null);
   readonly createdCampaignId = signal<string | null>(null);
   readonly lastSavedAt = signal<Date | null>(null);
@@ -131,15 +131,15 @@ export class CharacterCreate {
   readonly characterForm = form(
     this.draftModel,
     (path) => {
-      required(path.name, { message: 'Elige un nombre para tu personaje' });
-      required(path.raceIndex, { message: 'Elige un linaje' });
-      required(path.classIndex, { message: 'Elige una clase' });
-      required(path.backgroundIndex, { message: 'Elige un trasfondo' });
+      required(path.name, { message: 'Elegí un nombre para tu personaje' });
+      required(path.raceIndex, { message: 'Elegí un linaje' });
+      required(path.classIndex, { message: 'Elegí una clase' });
+      required(path.backgroundIndex, { message: 'Elegí un trasfondo' });
       required(path.campaignId, { message: 'Elegí la campaña del personaje' });
 
       required(path.level, { message: 'Indica el nivel inicial' });
-      min(path.level, 1, { message: 'El nivel minimo es 1' });
-      max(path.level, 20, { message: 'El nivel maximo es 20' });
+      min(path.level, 1, { message: 'El nivel mínimo es 1' });
+      max(path.level, 20, { message: 'El nivel máximo es 20' });
 
       min(path.gold, 0, { message: 'El oro no puede ser negativo' });
 
@@ -152,7 +152,7 @@ export class CharacterCreate {
 
         return value().length === choose
           ? undefined
-          : { kind: 'skills', message: `Elige ${choose} competencias de clase.` };
+          : { kind: 'skills', message: `Elegí ${choose} competencias de clase.` };
       });
 
       validate(path.spells, ({ value }) => this.validateSpells(value()));
@@ -239,7 +239,7 @@ export class CharacterCreate {
       .join(' y ')
   );
 
-  // Puntuacion final = base + bonus racial (tope 20). Es lo que se envia al backend.
+  // Puntuación final = base + bonus racial (tope 20). Es lo que se envia al backend.
   readonly finalScores = computed<AbilityScores>(() => {
     const base = this.draftModel().scores;
     const bonuses = this.racialBonuses();
@@ -312,7 +312,7 @@ export class CharacterCreate {
   // 0 = clase que prepara (mago, clerigo...): sin tope de conocidos.
   readonly spellsAllowed = computed(() => this.spellcasting()?.spells_known ?? 0);
 
-  // Puede lanzar algo en el nivel elegido (el explorador nivel 1, por ejemplo, todavia no).
+  // Puede lanzar algo en el nivel elegido (el explorador nivel 1, por ejemplo, todavía no).
   readonly canCastNow = computed(() => this.maxSpellLevel() > 0 || this.cantripsAllowed() > 0);
 
   readonly pickedCantrips = computed(() =>
@@ -404,7 +404,7 @@ export class CharacterCreate {
     });
   }
 
-  // Navegacion entre pasos
+  // Navegación entre pasos
 
   goToStep(step: number): void {
     if (step <= this.maxReachedStep()) {
@@ -435,7 +435,7 @@ export class CharacterCreate {
     this.currentStep.update(step => Math.max(1, step - 1));
   }
 
-  // Caracteristicas
+  // Características
 
   changeMethod(method: ScoreMethod): void {
     this.draftModel.update(draft => ({ ...draft, method, scores: defaultScores(method) }));
@@ -462,7 +462,7 @@ export class CharacterCreate {
     return !skills.includes(index) && skills.length >= choose;
   }
 
-  // Equipo y hechizos iniciales (se envian despues de crear el personaje)
+  // Equipo y hechizos iniciales (se envian después de crear el personaje)
 
   selectEquipmentTab(tab: EquipmentTab): void {
     this.equipmentTab.set(tab);
@@ -581,7 +581,7 @@ export class CharacterCreate {
 
     if (failed.length) {
       this.submitError.set(
-        `El personaje se creo, pero no se pudo agregar: ${failed.join(', ')}. Puedes agregarlo desde la ficha.`
+        `El personaje se creó, pero no se pudo agregar: ${failed.join(', ')}. Podés agregarlo desde la ficha.`
       );
       return;
     }
@@ -595,19 +595,19 @@ export class CharacterCreate {
         case 0:
           return 'No se pudo conectar con el servidor.';
         case 400:
-          return 'Revisa los datos del personaje.';
+          return 'Revisá los datos del personaje.';
         case 401:
-          return 'Tu sesion ha expirado. Inicia sesion nuevamente.';
+          return 'Tu sesión expiró. Iniciá sesión nuevamente.';
         case 403:
-          return 'El Dungeon Master no puede crear personajes en esta campana.';
+          return 'El Dungeon Master no puede crear personajes en esta campaña.';
         case 404:
-          return 'No se encontro la campana, la clase, el linaje o el trasfondo elegido.';
+          return 'No se encontró la campaña, la clase, el linaje o el trasfondo elegido.';
         case 409:
-          return 'Ya tienes un personaje vivo en esta campana.';
+          return 'Ya tenés un personaje vivo en esta campaña.';
       }
     }
 
-    return 'No se pudo crear el personaje. Intenta nuevamente.';
+    return 'No se pudo crear el personaje. Intentá nuevamente.';
   }
 
   // Helpers
@@ -635,11 +635,11 @@ export class CharacterCreate {
     const values = ABILITIES.map(({ key }) => scores[key]);
 
     if (values.some(value => value === null || Number.isNaN(value))) {
-      return { kind: 'scores', message: 'Completa todas las caracteristicas.' };
+      return { kind: 'scores', message: 'Completá todas las características.' };
     }
 
     if (method === 'standard' && !isStandardArray(scores)) {
-      return { kind: 'scores', message: 'Usa cada valor estandar una sola vez: 15, 14, 13, 12, 10 y 8.' };
+      return { kind: 'scores', message: 'Usá cada valor estándar una sola vez: 15, 14, 13, 12, 10 y 8.' };
     }
 
     if (method === 'point-buy') {
@@ -666,11 +666,11 @@ export class CharacterCreate {
     const leveled = spells.length - cantrips;
 
     if (cantrips > this.cantripsAllowed()) {
-      return { kind: 'spells', message: `Puedes elegir hasta ${this.cantripsAllowed()} trucos.` };
+      return { kind: 'spells', message: `Podés elegir hasta ${this.cantripsAllowed()} trucos.` };
     }
 
     if (this.spellsAllowed() > 0 && leveled > this.spellsAllowed()) {
-      return { kind: 'spells', message: `Puedes elegir hasta ${this.spellsAllowed()} conjuros.` };
+      return { kind: 'spells', message: `Podés elegir hasta ${this.spellsAllowed()} conjuros.` };
     }
 
     return undefined;

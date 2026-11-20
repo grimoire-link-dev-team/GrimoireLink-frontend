@@ -4,7 +4,7 @@ import { form, FormField } from '@angular/forms/signals';
 import { DndSpellReference } from '../../../shared/data-access/srd.model';
 import { spellLevelLabel } from '../../data-access/spell-rules';
 
-// Mas resultados que esto se piden refinar con la busqueda.
+// Mas resultados que esto se piden refinar con la búsqueda.
 const MAX_RESULTS = 40;
 
 // Buscador de hechizos de una clase. No llama al backend: el padre decide que hacer al elegir.
@@ -26,7 +26,7 @@ export class SpellPicker {
   readonly cantripLimitReached = input(false);
   readonly spellLimitReached = input(false);
 
-  // Nombres que ya conoce o ya eligio (no se ofrecen).
+  // Nombres que ya conoce o ya eligió (no se ofrecen).
   readonly excludedNames = input<string[]>([]);
   readonly pendingIndex = input<string | null>(null);
 

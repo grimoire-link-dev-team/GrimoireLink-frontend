@@ -84,7 +84,7 @@ export class CampaignContextService {
 
             if (!member) {
               this.roleError.set(
-                'No se encontro tu membresia en esta campana.'
+                'No se encontró tu membresía en esta campaña.'
               );
             }
 
@@ -93,7 +93,7 @@ export class CampaignContextService {
           error: () => {
             this.selectedRole.set(null);
             this.roleError.set(
-              'No se pudo consultar tu rol en la campana.'
+              'No se pudo consultar tu rol en la campaña.'
             );
             this.isRoleLoading.set(false);
           }
@@ -163,7 +163,7 @@ export class CampaignContextService {
         this.selectedId.set(null);
         this.userId.set(null);
         this.errorMessage.set(
-          'No se pudieron cargar las campanas.'
+          'No se pudieron cargar las campañas.'
         );
         this.isLoading.set(false);
       }

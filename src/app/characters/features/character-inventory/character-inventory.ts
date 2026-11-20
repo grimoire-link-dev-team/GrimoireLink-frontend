@@ -27,11 +27,11 @@ export class CharacterInventory {
 
   readonly goldModel = signal({ amount: 1 });
   readonly goldForm = form(this.goldModel, (path) => {
-    required(path.amount, { message: 'Ingresa una cantidad' });
+    required(path.amount, { message: 'Ingresá una cantidad' });
     min(path.amount, 1, { message: 'La cantidad minima es 1' });
   });
 
-  // Equipados primero, despues por nombre.
+  // Equipados primero, después por nombre.
   readonly items = computed<CharacterItem[]>(() =>
     [...(this.character().items ?? [])].sort((a, b) =>
       Number(b.equipped) - Number(a.equipped) || a.name.localeCompare(b.name)
@@ -102,14 +102,14 @@ export class CharacterInventory {
         case 0:
           return 'No se pudo conectar con el servidor.';
         case 403:
-          return 'No puedes modificar el inventario de este personaje.';
+          return 'No podés modificar el inventario de este personaje.';
         case 404:
-          return 'No se encontro el objeto.';
+          return 'No se encontró el objeto.';
         case 409:
           return 'El personaje ya tiene ese objeto.';
       }
     }
 
-    return 'No se pudo actualizar el inventario. Intenta nuevamente.';
+    return 'No se pudo actualizar el inventario. Intentá nuevamente.';
   }
 }

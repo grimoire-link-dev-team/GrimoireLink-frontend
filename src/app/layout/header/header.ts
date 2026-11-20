@@ -35,7 +35,7 @@ export class Header implements OnInit {
     { id: 'witch', name: 'Bruja' },
     { id: 'warlock', name: 'Brujo' },
     { id: 'assassin', name: 'Asesino' },
-    { id: 'rogue', name: 'Picaro' },
+    { id: 'rogue', name: 'Pícaro' },
     { id: 'archer', name: 'Arquero' },
     { id: 'elf', name: 'Elfa' },
     { id: 'dwarf', name: 'Enano' },

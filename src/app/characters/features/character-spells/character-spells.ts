@@ -126,14 +126,14 @@ export class CharacterSpells {
         case 0:
           return 'No se pudo conectar con el servidor.';
         case 403:
-          return 'No puedes modificar los hechizos de este personaje.';
+          return 'No podés modificar los hechizos de este personaje.';
         case 404:
-          return 'No se encontro el hechizo.';
+          return 'No se encontró el hechizo.';
         case 409:
           return 'El personaje ya conoce ese hechizo.';
       }
     }
 
-    return 'No se pudo actualizar los hechizos. Intenta nuevamente.';
+    return 'No se pudieron actualizar los hechizos. Intentá nuevamente.';
   }
 }

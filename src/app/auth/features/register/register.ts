@@ -30,7 +30,7 @@ export class Register {
     this.registerModel,
     (path) => {
       required(path.name, {
-        message: 'Ingresa tu nombre'
+        message: 'Ingresá tu nombre'
       });
 
       minLength(path.name, 3, {
@@ -38,19 +38,19 @@ export class Register {
       });
 
       required(path.email, {
-        message: 'Ingresa tu correo'
+        message: 'Ingresá tu correo'
       });
 
       email(path.email, {
-        message: 'El correo no es valido'
+        message: 'El correo no es válido'
       });
 
       required(path.password, {
-        message: 'Ingresa tu contrasena'
+        message: 'Ingresá tu contraseña'
       });
 
       minLength(path.password, 8, {
-        message: 'La contrasena debe tener al menos 8 caracteres'
+        message: 'La contraseña debe tener al menos 8 caracteres'
       });
     },
     {
@@ -74,11 +74,11 @@ export class Register {
   private getErrorMessage(error: unknown): string {
     if (error instanceof HttpErrorResponse) {
       if (error.status === 409) {
-        return 'El correo ya esta registrado';
+        return 'El correo ya está registrado';
       }
 
       if (error.status === 400) {
-        return 'Revisa los datos ingresados';
+        return 'Revisá los datos ingresados';
       }
 
       if (error.status === 0) {
@@ -86,6 +86,6 @@ export class Register {
       }
     }
 
-    return 'Ocurrio un error. Intenta nuevamente';
+    return 'Ocurrió un error. Intentá nuevamente';
   }
 }
