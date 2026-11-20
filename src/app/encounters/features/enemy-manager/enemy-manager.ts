@@ -2,8 +2,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import {Component,computed,effect,inject,input,OnInit,signal,untracked,} from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 import { firstValueFrom } from 'rxjs';
-import { Monster, MonsterReference } from '../../../core/models/monster';
-import { MonsterService } from '../../../core/services/monster-service';
+import { Monster, MonsterReference } from '../../../monsters/data-access/monster.model';
+import { MonsterService } from '../../../monsters/data-access/monster-service';
 import { EncounterService } from '../../data-access/encounter-service';
 import { Encounter } from '../../data-access/encounter.model';
 

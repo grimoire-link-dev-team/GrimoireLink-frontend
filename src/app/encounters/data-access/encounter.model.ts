@@ -1,4 +1,4 @@
-import { Monster } from '../../core/models/monster';
+import { Monster } from '../../monsters/data-access/monster.model';
 
 export type EncounterType =
   | 'COMBAT'

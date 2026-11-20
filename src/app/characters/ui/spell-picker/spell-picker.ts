@@ -1,8 +1,8 @@
 import { Component, computed, input, output, signal } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 
-import { DndSpellReference } from '../../../core/models/dndlinks';
-import { spellLevelLabel } from '../spell-rules';
+import { DndSpellReference } from '../../../shared/data-access/srd.model';
+import { spellLevelLabel } from '../../data-access/spell-rules';
 
 // Mas resultados que esto se piden refinar con la busqueda.
 const MAX_RESULTS = 40;

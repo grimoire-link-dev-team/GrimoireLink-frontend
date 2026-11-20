@@ -1,7 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { DiceRoller } from '../../../shared/components/dice-roller/dice-roller';
+import { DiceRoller } from '../../../shared/ui/dice-roller/dice-roller';
 import { EnemyManager } from '../enemy-manager/enemy-manager';
 import { CampaignContextService } from '../../../campaigns/data-access/campaign-context-service';
 

@@ -2,7 +2,7 @@ import { Component, computed, inject, input, output, signal } from '@angular/cor
 import { rxResource } from '@angular/core/rxjs-interop';
 import { form, FormField } from '@angular/forms/signals';
 
-import { Dndlinkservice } from '../../../core/services/dndlinkservice';
+import { SrdService } from '../../../shared/data-access/srd-service';
 import { ItemType } from '../../data-access/character.model';
 
 export interface PickedItem {
@@ -28,7 +28,7 @@ const ITEM_TYPES: { value: ItemType; label: string }[] = [
 })
 export class ItemPicker {
 
-  private readonly dndService = inject(Dndlinkservice);
+  private readonly srdService = inject(SrdService);
 
   // Indices que ya tiene o ya eligio.
   readonly ownedIndexes = input<string[]>([]);
@@ -46,7 +46,7 @@ export class ItemPicker {
   readonly catalog = rxResource({
     params: () => this.itemType(),
     stream: ({ params }) =>
-      this.dndService.getList(params === 'EQUIPMENT' ? 'equipment' : 'magic-items'),
+      this.srdService.getList(params === 'EQUIPMENT' ? 'equipment' : 'magic-items'),
   });
 
   private readonly owned = computed(() => new Set(this.ownedIndexes()));

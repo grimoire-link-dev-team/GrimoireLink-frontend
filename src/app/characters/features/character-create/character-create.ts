@@ -6,14 +6,14 @@ import { form, FormField, FormRoot, max, min, required, validate } from '@angula
 import { catchError, firstValueFrom, of } from 'rxjs';
 
 import { CampaignContextService } from '../../../campaigns/data-access/campaign-context-service';
-import { Dndlinkservice } from '../../../core/services/dndlinkservice';
-import { DndClass, DndRace, DndSpellReference } from '../../../core/models/dndlinks';
+import { SrdService } from '../../../shared/data-access/srd-service';
+import { DndClass, DndRace, DndSpellReference } from '../../../shared/data-access/srd.model';
 import { CatalogService } from '../../data-access/catalog-service';
 import { CharacterService } from '../../data-access/character-service';
 import { CharacterCreateRequest } from '../../data-access/character.model';
 import { ItemPicker, PickedItem } from '../../ui/item-picker/item-picker';
 import { SpellPicker } from '../../ui/spell-picker/spell-picker';
-import { maxSpellLevel, spellLevelLabel } from '../../ui/spell-rules';
+import { maxSpellLevel, spellLevelLabel } from '../../data-access/spell-rules';
 import {
   ABILITIES,
   AbilityKey,
@@ -30,7 +30,7 @@ import {
   proficiencyBonus,
   SCORE_METHODS,
   ScoreMethod,
-} from './character-rules';
+} from '../../data-access/character-rules';
 
 interface CharacterDraft {
   name: string;
@@ -84,7 +84,7 @@ export class CharacterCreate {
 
   private readonly catalogService = inject(CatalogService);
   private readonly characterService = inject(CharacterService);
-  private readonly dndService = inject(Dndlinkservice);
+  private readonly srdService = inject(SrdService);
   private readonly router = inject(Router);
 
   protected readonly steps = STEPS;
@@ -165,12 +165,12 @@ export class CharacterCreate {
 
   readonly raceDetails = rxResource({
     params: () => this.draftModel().raceIndex || undefined,
-    stream: ({ params }) => this.dndService.getOne<DndRace>('races', params),
+    stream: ({ params }) => this.srdService.getOne<DndRace>('races', params),
   });
 
   readonly classDetails = rxResource({
     params: () => this.draftModel().classIndex || undefined,
-    stream: ({ params }) => this.dndService.getOne<DndClass>('classes', params),
+    stream: ({ params }) => this.srdService.getOne<DndClass>('classes', params),
   });
 
   // Espacios de conjuro de la clase en el nivel elegido.
@@ -179,12 +179,12 @@ export class CharacterCreate {
       const { classIndex, level } = this.draftModel();
       return classIndex && level >= 1 && level <= 20 ? { classIndex, level } : undefined;
     },
-    stream: ({ params }) => this.dndService.getClassLevel(params.classIndex, params.level),
+    stream: ({ params }) => this.srdService.getClassLevel(params.classIndex, params.level),
   });
 
   readonly classSpells = rxResource({
     params: () => this.draftModel().classIndex || undefined,
-    stream: ({ params }) => this.dndService.getClassSpells(params),
+    stream: ({ params }) => this.srdService.getClassSpells(params),
   });
 
   // Derivados para la vista

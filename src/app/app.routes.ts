@@ -20,7 +20,7 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        loadComponent: () => import('./pages/home/home').then((m) => m.Home),
+        loadComponent: () => import('./home/features/home/home').then((m) => m.Home),
       },
       {
         path: '',
@@ -29,7 +29,7 @@ export const routes: Routes = [
           {
             path: 'inicio',
             loadComponent: () =>
-              import('./pages/home/home').then(m => m.Home),
+              import('./home/features/home/home').then(m => m.Home),
           },
           {
             path: 'personajes',
@@ -82,12 +82,12 @@ export const routes: Routes = [
           },
           {
             path: 'monstruos',
-            loadComponent: () => import('./pages/monsters/monsters').then((m) => m.Monsters),
+            loadComponent: () => import('./monsters/features/bestiary/monsters').then((m) => m.Monsters),
           },
           {
             path: 'dados',
             loadComponent: () =>
-              import('./shared/components/dice-roller/dice-roller')
+              import('./shared/ui/dice-roller/dice-roller')
                 .then(m => m.DiceRoller),
           },
           {

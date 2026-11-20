@@ -3,12 +3,12 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom, Observable } from 'rxjs';
 
-import { DndSpellReference } from '../../../core/models/dndlinks';
-import { Dndlinkservice } from '../../../core/services/dndlinkservice';
+import { DndSpellReference } from '../../../shared/data-access/srd.model';
+import { SrdService } from '../../../shared/data-access/srd-service';
 import { CharacterService } from '../../data-access/character-service';
 import { CharacterResponse } from '../../data-access/character.model';
 import { SpellPicker } from '../../ui/spell-picker/spell-picker';
-import { maxSpellLevel, slotsByLevel, spellLevelLabel } from '../../ui/spell-rules';
+import { maxSpellLevel, slotsByLevel, spellLevelLabel } from '../../data-access/spell-rules';
 
 interface KnownSpell {
   publicId: string;
@@ -26,7 +26,7 @@ interface KnownSpell {
 export class CharacterSpells {
 
   private readonly characterService = inject(CharacterService);
-  private readonly dndService = inject(Dndlinkservice);
+  private readonly srdService = inject(SrdService);
 
   readonly character = input.required<CharacterResponse>();
   readonly classIndex = input<string | null>(null);
@@ -42,7 +42,7 @@ export class CharacterSpells {
   // Lista de hechizos de la clase (dnd5eapi), con su nivel.
   readonly classSpells = rxResource({
     params: () => this.classIndex() ?? undefined,
-    stream: ({ params }) => this.dndService.getClassSpells(params),
+    stream: ({ params }) => this.srdService.getClassSpells(params),
   });
 
   readonly slots = computed(() => this.character().spellSlots);
