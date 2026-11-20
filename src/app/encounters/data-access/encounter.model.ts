@@ -1,3 +1,4 @@
+import { CharacterResponse } from '../../characters/data-access/character.model';
 import { Monster } from '../../monsters/data-access/monster.model';
 
 export type EncounterType =
@@ -27,6 +28,18 @@ export interface Encounter {
   description: string;
   encounterStatus: EncounterStatus;
   monsters: Monster[];
+  characters: EncounterCharacter[];
+}
+
+export interface EncounterCharacter {
+  publicId: string;
+  name: string;
+  raceName: string;
+  className: string;
+  level: number;
+  maxHp: number;
+  currentHp: number;
+  status: CharacterResponse['status'];
 }
 
 export interface EncounterRequest {

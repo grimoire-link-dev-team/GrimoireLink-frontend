@@ -6,7 +6,7 @@
       <h2>Enemigos del encuentro</h2>
 
       @if (canEdit()) {
-        <p>Administra los enemigos de tu encuentro.</p>
+        <p>Administrá los enemigos de tu encuentro.</p>
       }
     </div>
 
@@ -31,23 +31,31 @@
 
       <div class="monster-results">
 
-        @for (
-          monster of filteredMonsters();
-          track monster.index
-        ) {
+        @if (catalog.isLoading()) {
+          <p>Cargando monstruos...</p>
+        } @else if (catalog.error()) {
+          <p class="enemy-error">No se pudo cargar el catálogo de monstruos.</p>
+        } @else {
 
-          <button
-            type="button"
-            class="monster-option"
-            [class.selected]="selectedMonster()?.index === monster.index"
-            (click)="selectMonster(monster)"
-          >
-            {{ monster.name }}
-          </button>
+          @for (
+            monster of filteredMonsters();
+            track monster.index
+          ) {
 
-        } @empty {
+            <button
+              type="button"
+              class="monster-option"
+              [class.selected]="selectedMonster()?.index === monster.index"
+              (click)="selectMonster(monster)"
+            >
+              {{ monster.name }}
+            </button>
 
-          <p>No se encontraron monstruos.</p>
+          } @empty {
+
+            <p>No se encontraron monstruos.</p>
+
+          }
 
         }
 
@@ -64,7 +72,7 @@
           <button
             type="button"
             class="primary-button"
-            [disabled]="isSaving() || isLoading() || !encounter()"
+            [disabled]="isSaving() || !encounter.hasValue()"
             (click)="addMonster()"
           >
             Agregar al encuentro
@@ -92,13 +100,21 @@
 
     <h3>Monstruos</h3>
 
-    @if (isLoading()) {
+    @if (encounter.isLoading()) {
 
       <p class="empty-message">
         Cargando enemigos...
       </p>
 
-    } @else if (encounter(); as currentEncounter) {
+    } @else if (encounter.error()) {
+
+      <p class="enemy-error" role="alert">
+        No se pudo cargar el encuentro.
+      </p>
+
+    } @else if (encounter.hasValue()) {
+
+      @let currentEncounter = encounter.value();
 
       @for (
         monster of currentEncounter.monsters;
@@ -112,7 +128,7 @@
             <h4>{{ monster.name }}</h4>
 
             <p>
-              Desafio: {{ monster.challengeRating }}
+              Desafío: {{ monster.challengeRating }}
             </p>
 
             <p>
@@ -140,7 +156,7 @@
                 [disabled]="isSaving() || monster.currentHp <= 0"
                 (click)="damage(monster, hpAmount.valueAsNumber)"
               >
-                Dano
+                Daño
               </button>
 
               <button
@@ -169,7 +185,7 @@
       } @empty {
 
         <p class="empty-message">
-          Todavia no hay enemigos en este encuentro.
+          Todavía no hay enemigos en este encuentro.
         </p>
 
       }

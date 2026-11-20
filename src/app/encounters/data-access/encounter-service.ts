@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Encounter, EncounterRequest, EncounterStatus } from './encounter.model';
@@ -17,24 +17,38 @@ export class EncounterService {
   }
 
   updateStatus(id: string, status: EncounterStatus) {
-  return this.http.put<Encounter>(`${this.url}/${id}/status`, null, { params: { status } });
-}
+    return this.http.put<Encounter>(`${this.url}/${id}/status`, null, { params: { status } });
+  }
 
   add(encounter: EncounterRequest) {
     return this.http.post<Encounter>(this.url, encounter);
   }
 
   addMonster(id: string, monsterIndex: string) {
-  return this.http.post<Encounter>(`${this.url}/${id}/monsters/${monsterIndex}`, null);
-}
+    return this.http.post<Encounter>(`${this.url}/${id}/monsters/${monsterIndex}`, null);
+  }
 
-updateMonsterHp(id: string, monsterId: string, newHp: number) {
-  return this.http.patch<Encounter>(`${this.url}/${id}/monsters/${monsterId}/hp`, null, {
-    params: { newHp },
-  });
-}
+  updateMonsterHp(id: string, monsterId: string, newHp: number) {
+    return this.http.patch<Encounter>(`${this.url}/${id}/monsters/${monsterId}/hp`, null, {
+      params: { newHp },
+    });
+  }
 
   removeMonster(id: string, monsterId: string) {
     return this.http.delete<Encounter>(`${this.url}/${id}/monsters/${monsterId}`);
+  }
+
+  addCharacter(id: string, characterId: string) {
+    return this.http.post<Encounter>(`${this.url}/${id}/characters/${characterId}`, null);
+  }
+
+  updateCharacterHp(id: string, characterId: string, newHp: number) {
+    return this.http.patch<Encounter>(`${this.url}/${id}/characters/${characterId}/hp`, null, {
+      params: { newHp },
+    });
+  }
+
+  removeCharacter(id: string, characterId: string) {
+    return this.http.delete<Encounter>(`${this.url}/${id}/characters/${characterId}`);
   }
 }
